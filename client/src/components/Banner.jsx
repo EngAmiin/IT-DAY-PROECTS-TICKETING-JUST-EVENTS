@@ -5,22 +5,28 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-
+import { useMediaQuery } from "@mui/material";
 export default function Banner() {
+    const isMobileOrMd = useMediaQuery("(max-width: 768px)");
   return (
     <Container style={{ marginTop: "4rem" }}>
       <Row>
         <Col xl={7} md={12}>
           <div className="">
             <h2 className="poppins-light">Empowering Innovation</h2>
-            <p className='poppins-thin' style={{lineHeight: 1.8,textAlign: "justify"}}>
+            <p
+              className="poppins-thin"
+              style={{ lineHeight: 1.8, textAlign: "justify" }}
+            >
               Annual event that brings together technology enthusiasts,
               innovators to showcase and celebrate groundbreaking projects and
               advancements in the field of information technology. With a focus
               on fostering collaboration and driving innovation, IT-DAY-PROJECT
               serves as a platform for Students to Register their Project.
             </p>
-            <Button className='my-sm-3 my-xs-2 my-lg-1 my-md-1' variant="outline-secondary">Top Talented 📢</Button>
+            <Button className={isMobileOrMd ? "mb-4" : ""} variant="outline-secondary">
+              Top Talented 📢
+            </Button>
           </div>
         </Col>
         <Col xl={5} md={12}>
