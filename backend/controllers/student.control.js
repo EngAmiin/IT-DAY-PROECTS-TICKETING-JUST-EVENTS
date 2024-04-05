@@ -11,7 +11,7 @@ module.exports={
             if (err)
             return res.status(500).json({message: "Account Not Registered",description: err.message})
             
-            return res.status(200).json({message: "Your account has been Created"})
+            return res.status(200).json({message: "Your account has been Created",result :result})
         })
       }catch(err) {
         return res.status(500).json("Internal Server Error, Try Again");
