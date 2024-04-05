@@ -3,4 +3,5 @@ export const SET_CURRENT_USER = "SET_CURRENT_USER";
 export const INSERT_USER = "INSERT_USER";
 export const ERROR = "ERROR";
 export const SAVING = "SAVING";
+export const PROJECT_TYPES = "PROJECT_TYPES";
 export const FETCH_PROJECTS_FOR_USER = "FETCH_PROJECTS_FOR_USER";

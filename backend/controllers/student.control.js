@@ -7,7 +7,7 @@ module.exports = {
     try {
       var q =
         "INSERT INTO projects(ProjectName,type,event,tech,student) VALUES(?,?,?,?,?)";
-      const { project,type,event,tech,studentId } = req.body;
+      const { project, type, event, tech, studentId } = req.body;
       dbConn.query(
         q,
         [project, parseInt(type), parseInt(event), tech, parseInt(studentId)],
@@ -38,12 +38,10 @@ module.exports = {
         [name, mobile, email, password, id_card, semester],
         (err, result) => {
           if (err)
-            return res
-              .status(500)
-              .json({
-                message: "Account Not Registered",
-                description: err.message,
-              });
+            return res.status(500).json({
+              message: "Account Not Registered",
+              description: err.message,
+            });
 
           return res
             .status(200)
@@ -79,6 +77,40 @@ module.exports = {
         "SELECT projects.id,projects.ProjectName, projectType.type,projects.status FROM `projects` join projectType on projects.type=projectType.id WHERE projects.student=? ORDER BY created_at DESC";
       const { id } = req.params;
       dbConn.query(q, [id], (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+  readTypes: (req, res) => {
+    try {
+      var q = "SELECT * FROM `projectType`";
+      dbConn.query(q, (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+  removeProject: (req, res) => {
+    try {
+      var q =
+        "DELETE FROM projects where projects.id=? and projects.student=?";
+      const { projectId,studentId } = req.params;
+      dbConn.query(q, [projectId,studentId], (err, result) => {
         if (err)
           return res.status(500).json({
             message: "Error",

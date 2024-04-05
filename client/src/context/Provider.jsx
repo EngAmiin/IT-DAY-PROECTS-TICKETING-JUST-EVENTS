@@ -148,6 +148,19 @@ export const ContextAPIProvider = ({ children }) => {
       });
    
   };
+  const removeProject = async (data, callback) => {
+    axios
+      .delete(`${DEV_PRODUCTION}student/remove/${data.projectId}/${data.studentId}`)
+      .then((response) => {
+        callback(false,"Project Has been removed");
+      })
+      .catch((error) => {
+        callback(
+          true,
+          "Error Occurred During Authentication, Please try again"
+        );
+      });
+  };
 
   return (
     <ContextAPI.Provider
@@ -165,6 +178,7 @@ export const ContextAPIProvider = ({ children }) => {
         authLogin,
         readProjects,
         registerProject,
+        removeProject,
       }}
     >
       {children}
