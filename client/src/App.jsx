@@ -1,25 +1,35 @@
 import { useState } from 'react'
 import Nav from './components/Nav'
-import Banner from './components/Banner'
 import { Box, Container } from "@mui/material";
-import TopTalents from './components/TopTalents';
-import Footer from './components/Footer';
-import Register from './pages/Register';
+import Projects from './pages/Projects';
+import Home from "./components/Home";
+import Footer from './components/Footer'
+import {routes} from './routes/allRoutes'
+import { BrowserRouter as Router, Route,Routes } from "react-router-dom";
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <Box>
-      <Nav />
-      <Container>
-      <Register/>
-
-      {/* real */}
-        {/* <Banner />
-          <TopTalents/>
-          <Footer/> */}
-      </Container>
+      <Router>
+        <Nav />
+     <Routes> 
+ {routes.map((route, index)=>{
+   return (
     
+       <Route
+         key={index}
+         path={route.path}
+         exact={route.exact}
+         element={<route.component/>}
+       />
+    
+   );
+ }) }
+     </Routes>
+       
+        <Footer />
+      </Router>
     </Box>
   );
 }

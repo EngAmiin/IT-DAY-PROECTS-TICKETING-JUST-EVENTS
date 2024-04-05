@@ -6,7 +6,8 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useMediaQuery } from "@mui/material";
-export default function Banner() {
+import TopTalents from './TopTalents';
+export default function Home() {
     const isMobileOrMd = useMediaQuery("(max-width: 768px)");
   return (
     <Container style={{ marginTop: "4rem" }}>
@@ -56,6 +57,7 @@ export default function Banner() {
           </Card>
         </Col>
       </Row>
+      <TopTalents/>
     </Container>
   );
 }
