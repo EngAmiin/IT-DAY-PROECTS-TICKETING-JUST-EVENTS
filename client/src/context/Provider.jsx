@@ -1,5 +1,5 @@
 import { createContext, useReducer } from "react";
-import { DEVELOPMENT_URL } from "../config/url";
+import { DEV_PRODUCTION } from "../config/url";
 import { ERROR, GET_CURRENT_USER, INSERT_USER, SET_CURRENT_USER } from "./actions";
 import axios from 'axios'
 const initialState = {
@@ -64,17 +64,20 @@ export const ContextAPIProvider = ({ children }) => {
   };
 
   const registerStudent =(studentData)=>{
-      axios.post(`${DEVELOPMENT_URL}student`,studentData).then((response)=>{
+      axios
+        .post(`${DEV_PRODUCTION}student`, studentData)
+        .then((response) => {
           dispatch({
             type: INSERT_USER,
-            payload: response.data.message
-          })
-      }).catch((error)=>{
-        dispatch({
-          type: ERROR,
-          payload: "Error Occurred During Creation 😪, Please try again ",
+            payload: response.data.message,
+          });
+        })
+        .catch((error) => {
+          dispatch({
+            type: ERROR,
+            payload: "Error Occurred During Creation 😪, Please try again ",
+          });
         });
-      })
         
     
   }
