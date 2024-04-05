@@ -4,9 +4,12 @@ import App from './App.jsx'
 import './custom/style.css'
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../fonts/poppins.css'
+import { ContextAPIProvider } from './context/Provider.jsx';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+    <ContextAPIProvider>
+      <App />
+    </ContextAPIProvider>
+  </React.StrictMode>
+);
