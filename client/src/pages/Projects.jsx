@@ -1,61 +1,62 @@
-import React,{useState} from 'react'
+import React, { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
-import {Row,Col} from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import DataTable from "react-data-table-component";
-import AddProjectModal from '../components/AddProjectModal';
+import AddProjectModal from "../components/AddProjectModal";
+import { ContextAPI } from "../context/Provider";
+import { Toaster, toast } from "react-hot-toast";
+import { useNavigate } from "react-router";
 export default function Projects() {
-       const [open, setOpen] = useState(false);
-const columns = [
-  {
-    
-    name: "Project",
-    selector: (row) => row.title,
-  },
-  {
-    name: "Type",
-    sortable: true,
-    
-    selector: (row) => row.year,
-  },
-  {
-    name: "Year",
-    sortable: true,
-    
-    selector: (row) => row.year,
-  },
-  {
-    name: "Registered",
-    sortable: true,
-    
-    selector: (row) => row.year,
-  },
-];
+  const { projectsByUser, user, getCurrentUser, readProjects } =
+    useContext(ContextAPI);
+  const [open, setOpen] = useState(false);
+  const nav = useNavigate();
+const load =()=>{
+  getCurrentUser();
+  if (user.length > 0) {
+    readProjects(user[0]?.id, function (err, res) {
+      if (err) {
+        toast.error(res);
+        return;
+      }
+    });
+  } else {
+    nav("/");
+  }
+}
+  useEffect(() => {
+    load()
+  }, []);
 
-const data = [
-  {
-    id: 1,
-    title: "Beetlejuice",
-    year: "1988",
-    year: "1988",
-    year: "1988",
-  },
-  {
-    id: 2,
-    title: "Ghostbusters",
-    year: "1984",
-    year: "1984",
-    year: "1984",
-  },
-];
+  const columns = [
+    {
+      name: "Project",
+      selector: (row) => row.ProjectName,
+    },
+    {
+      name: "Type",
+      sortable: true,
+      selector: (row) => row.type,
+    },
+    {
+      name: "Status",
+      sortable: true,
+      selector: (row) => row.status,
+    },
+  ];
+
   return (
     <Container style={{ marginTop: "4rem" }}>
+      <Toaster position="top-center" reverseOrder={false} />
       <Row className="mb-3">
         <Col lg={10} md={12} sm={12} xs={12}>
           <h4>My Projects 🔥💖</h4>
         </Col>
         <Col lg={2} md={12} sm={12} xs={12}>
-          <Button onClick={()=> setOpen(true)} variant="outline-secondary">Add New ✔</Button>
+          <Button onClick={() => setOpen(true)} variant="outline-secondary">
+            Add New ✔
+          </Button>
         </Col>
       </Row>
       <DataTable
@@ -78,10 +79,10 @@ const data = [
         striped
         selectableRows
         columns={columns}
-        data={data}
+        data={projectsByUser}
       />
 
-      <AddProjectModal show={open} handleClose={()=>setOpen(false)}/>
+      <AddProjectModal show={open} handleClose={() => setOpen(false)} />
     </Container>
   );
 }

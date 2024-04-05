@@ -7,7 +7,7 @@ const conn = mysql.createConnection({
   user: process.env.MYSQL_ADDON_USER,
   password: process.env.MYSQL_ADDON_PASS,
   port: process.env.MYSQL_ADDON_PORT,
-  keepAliveInitialDelay: 10000,
+  keepAliveInitialDelay: 40000,
   enableKeepAlive: true
 });
 

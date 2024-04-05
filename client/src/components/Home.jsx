@@ -5,40 +5,16 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Image from "react-bootstrap/Image";
 import { useMediaQuery } from "@mui/material";
 import TopTalents from './TopTalents';
-import { Toaster, toast } from "react-hot-toast";
-import { ContextAPI } from '../context/Provider';
+import ListGroup from "react-bootstrap/ListGroup";
+
 export default function Home() {
     const isMobileOrMd = useMediaQuery("(max-width: 768px)");
-    const { authLogin } = useContext(ContextAPI);
-     const [authData, setAuthData] = useState({
-       id_card: "",
-       password: "",
-     });
-
-     const handleChange=(e)=>setAuthData({
-      ...authData,
-      [e.target.name]: e.target.value
-     })
-     const handleSubmit =(e)=>{
-      e.preventDefault();
-      authLogin(authData,(err,response)=>{
-          if(err){
-            toast.error(response);
-            return
-          }
-          toast.success(response);
-          setAuthData({
-            id_card: "",
-            password: ""
-          })
-      })
-
-     }
+  
   return (
     <Container style={{ marginTop: "4rem" }}>
-      <Toaster position="top-center" reverseOrder={false} />
       <Row>
         <Col xl={7} md={12}>
           <div className="">
@@ -62,42 +38,24 @@ export default function Home() {
           </div>
         </Col>
         <Col xl={5} md={12}>
-          <Card
-            className="box-shadow"
-            style={{ width: "100%", border: "none", borderRadius: "10px" }}
-          >
+          <Card className="box-shadow">
             <Card.Body>
-              <Card.Title>LOGIN YOUR ACCOUNT</Card.Title>
-              <hr />
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label>Email address</Form.Label>
-                <Form.Control
-                  value={authData.id_card}
-                  name="id_card"
-                  onChange={handleChange}
-                  type="text"
-                  placeholder="your id_number, e,g: C120000"
-                />
-              </Form.Group>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea1"
-              >
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  value={authData.password}
-                  name="password"
-                  onChange={handleChange}
-                  type="password"
-                  placeholder="your pass"
-                />
-              </Form.Group>
-              <Button onClick={handleSubmit} variant="secondary">
-                Sign In
-              </Button>
+              <ListGroup>
+                <ListGroup.Item>
+                  IT-DAY Event provides an opportunity for students to receive
+                  recognition for their hard work and achievements
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  IT-DAY allows students to receive valuable feedback from a
+                  knowledgeable audience
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  Presenting projects at IT-DAY helps students develop essential
+                  presentation and communication skills
+                </ListGroup.Item>
+
+                <ListGroup.Item>Join Annual IT-DAY EVENT @JUST</ListGroup.Item>
+              </ListGroup>
             </Card.Body>
           </Card>
         </Col>

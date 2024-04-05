@@ -1,9 +1,17 @@
 import { createContext, useReducer } from "react";
 import { DEV_PRODUCTION } from "../config/url";
-import { ERROR,SAVING, GET_CURRENT_USER, INSERT_USER, SET_CURRENT_USER } from "./actions";
+import {
+  FETCH_PROJECTS_FOR_USER,ERROR,
+  SAVING,
+  GET_CURRENT_USER,
+  INSERT_USER,
+  SET_CURRENT_USER,
+} from "./actions";
 import axios from 'axios'
 const initialState = {
   currentUser: [],
+  allProjects: [],
+  projectsByUser: [],
   successMessage: "",
   errorMessage: "",
   hasError: false,
@@ -17,13 +25,17 @@ const reducer = (state, action) => {
         ...state,
         currentUser: [...action.payload],
       };
+    case FETCH_PROJECTS_FOR_USER:
+      return {
+        ...state,
+        projectsByUser: [...action.payload],
+      };
     case SET_CURRENT_USER:
       return {
         ...state,
         successMessage: action.payload,
       };
     case INSERT_USER:
-      
       return {
         ...state,
         saving: false,
@@ -83,6 +95,19 @@ export const ContextAPIProvider = ({ children }) => {
           callback(true,"Error Occurred During Creation, Please try again")
       });
   };
+   const registerProject = async (data, callback) => {
+     dispatch({
+       type: SAVING,
+     });
+     axios
+       .post(`${DEV_PRODUCTION}student/submitProject`, data)
+       .then((response) => {
+         callback(false, "Project Has Been Created");
+       })
+       .catch((error) => {
+         callback(true, "Error Occurred During Creation, Please try again");
+       });
+   };
   const authLogin = async (studentData, callback) => {
     dispatch({
       type: SAVING,
@@ -92,10 +117,11 @@ export const ContextAPIProvider = ({ children }) => {
       .then((response) => {
         if(response.data.data.length>0)
         {
-          const {id_card,FullName}= response.data.data[0];
+          const {id_card,FullName,id}= response.data.data[0];
           setCurrentUser([{
-            id: id_card,
-            name : FullName
+            card: id_card,
+            name : FullName,
+            id: id
           }])
           console.log(response.data.data[0])
           callback(false,response.data.message);
@@ -107,11 +133,27 @@ export const ContextAPIProvider = ({ children }) => {
           callback(true,"Error Occurred During Authentication, Please try again")
       });
   };
+  const readProjects = async (id, callback) => {
+    axios
+      .get(`${DEV_PRODUCTION}student/projects/${id}`)
+      .then((response) => {
+       
+       dispatch({
+        type: FETCH_PROJECTS_FOR_USER,
+        payload: response.data.data
+       })
+      })
+      .catch((error) => {
+          callback(true,"Error Occurred During Authentication, Please try again")
+      });
+   
+  };
 
   return (
     <ContextAPI.Provider
       value={{
         user: state.currentUser,
+        projectsByUser: state.projectsByUser,
         saving: state.saving,
         hasError: state.hasError,
         errorMessage: state.errorMessage,
@@ -120,7 +162,9 @@ export const ContextAPIProvider = ({ children }) => {
         setCurrentUser,
         logout,
         registerStudent,
-        authLogin
+        authLogin,
+        readProjects,
+        registerProject,
       }}
     >
       {children}
