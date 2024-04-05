@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext,useState } from 'react'
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -7,10 +7,38 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useMediaQuery } from "@mui/material";
 import TopTalents from './TopTalents';
+import { Toaster, toast } from "react-hot-toast";
+import { ContextAPI } from '../context/Provider';
 export default function Home() {
     const isMobileOrMd = useMediaQuery("(max-width: 768px)");
+    const { authLogin } = useContext(ContextAPI);
+     const [authData, setAuthData] = useState({
+       id_card: "",
+       password: "",
+     });
+
+     const handleChange=(e)=>setAuthData({
+      ...authData,
+      [e.target.name]: e.target.value
+     })
+     const handleSubmit =(e)=>{
+      e.preventDefault();
+      authLogin(authData,(err,response)=>{
+          if(err){
+            toast.error(response);
+            return
+          }
+          toast.success(response);
+          setAuthData({
+            id_card: "",
+            password: ""
+          })
+      })
+
+     }
   return (
     <Container style={{ marginTop: "4rem" }}>
+      <Toaster position="top-center" reverseOrder={false} />
       <Row>
         <Col xl={7} md={12}>
           <div className="">
@@ -25,7 +53,10 @@ export default function Home() {
               on fostering collaboration and driving innovation, IT-DAY-PROJECT
               serves as a platform for Students to Register their Project.
             </p>
-            <Button className={isMobileOrMd ? "mb-4" : ""} variant="outline-secondary">
+            <Button
+              className={isMobileOrMd ? "mb-4" : ""}
+              variant="outline-secondary"
+            >
               Top Talented 📢
             </Button>
           </div>
@@ -43,21 +74,35 @@ export default function Home() {
                 controlId="exampleForm.ControlInput1"
               >
                 <Form.Label>Email address</Form.Label>
-                <Form.Control type="email" placeholder="name@example.com" />
+                <Form.Control
+                  value={authData.id_card}
+                  name="id_card"
+                  onChange={handleChange}
+                  type="text"
+                  placeholder="your id_number, e,g: C120000"
+                />
               </Form.Group>
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlTextarea1"
               >
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="your pass" />
+                <Form.Control
+                  value={authData.password}
+                  name="password"
+                  onChange={handleChange}
+                  type="password"
+                  placeholder="your pass"
+                />
               </Form.Group>
-              <Button variant="secondary">Sign In</Button>
+              <Button onClick={handleSubmit} variant="secondary">
+                Sign In
+              </Button>
             </Card.Body>
           </Card>
         </Col>
       </Row>
-      <TopTalents/>
+      <TopTalents />
     </Container>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -8,9 +8,11 @@ import { Toaster, toast } from "react-hot-toast";
 import { ContextAPI } from "../context/Provider";
 import Alerts from "../components/Alerts";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 export default function Register() {
   var navigate = useNavigate();
-  const { registerStudent, hasError, errorMessage, successMessage } =
+  const [show,setShow]=useState(false);
+  const { saving,registerStudent, hasError, errorMessage, successMessage } =
     useContext(ContextAPI);
   const [data, setData] = useState({
     name: "",
@@ -29,10 +31,20 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await registerStudent(data);
-    console.log(res);
-  
+    registerStudent(data,async (err,res)=>{
+      if(err){
+        toast.error(res);
+        return
+      }
+    toast.success(res);
+    setTimeout(() => {
+      navigate('/')
+    }, 2000);
+      
+
+    });
   };
+
 
   return (
     <Container
@@ -44,19 +56,21 @@ export default function Register() {
         marginTop: "2rem",
       }}
     >
-      {hasError ? (
-        <Alerts
-          show={true}
-          variant={"danger"}
-          message={<strong>{errorMessage}</strong>}
-        />
-      ) : (
-        <Alerts
-          show={true}
-          variant={"success"}
-          message={<strong>{successMessage}</strong>}
-        />
-      )}
+      <Alerts
+        show={show}
+        variant={hasError ? "danger" : "success"}
+        message={
+          hasError ? (
+            <>
+              <strong>{errorMessage}</strong>
+            </>
+          ) : (
+            <>
+              <strong>{successMessage}</strong>
+            </>
+          )
+        }
+      />
 
       <Toaster position="top-center" reverseOrder={false} />
       <h4 className="text-muted mb-4">Register Your Account</h4>

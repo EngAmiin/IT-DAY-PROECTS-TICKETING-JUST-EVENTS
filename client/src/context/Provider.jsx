@@ -1,12 +1,13 @@
 import { createContext, useReducer } from "react";
 import { DEV_PRODUCTION } from "../config/url";
-import { ERROR, GET_CURRENT_USER, INSERT_USER, SET_CURRENT_USER } from "./actions";
+import { ERROR,SAVING, GET_CURRENT_USER, INSERT_USER, SET_CURRENT_USER } from "./actions";
 import axios from 'axios'
 const initialState = {
   currentUser: [],
   successMessage: "",
   errorMessage: "",
   hasError: false,
+  saving: false,
 };
 
 const reducer = (state, action) => {
@@ -25,6 +26,7 @@ const reducer = (state, action) => {
       
       return {
         ...state,
+        saving: false,
         hasError: false,
         successMessage: action.payload,
       };
@@ -33,6 +35,11 @@ const reducer = (state, action) => {
         ...state,
         errorMessage: action.payload,
         hasError: true,
+      };
+    case SAVING:
+      return {
+        ...state,
+        saving: true,
       };
 
     default:
@@ -63,29 +70,49 @@ export const ContextAPIProvider = ({ children }) => {
     getCurrentUser();
   };
 
-  const registerStudent =(studentData)=>{
-      axios
-        .post(`${DEV_PRODUCTION}student`, studentData)
-        .then((response) => {
-          dispatch({
-            type: INSERT_USER,
-            payload: response.data.message,
-          });
-        })
-        .catch((error) => {
-          dispatch({
-            type: ERROR,
-            payload: "Error Occurred During Creation 😪, Please try again ",
-          });
-        });
-        
-    
-  }
+  const registerStudent = async (studentData, callback) => {
+    dispatch({
+      type: SAVING,
+    });
+    axios
+      .post(`${DEV_PRODUCTION}student`, studentData)
+      .then((response) => {
+        callback(false,response.data.message);
+      })
+      .catch((error) => {
+          callback(true,"Error Occurred During Creation, Please try again")
+      });
+  };
+  const authLogin = async (studentData, callback) => {
+    dispatch({
+      type: SAVING,
+    });
+    axios
+      .get(`${DEV_PRODUCTION}student/${studentData.id_card}/${studentData.password}`)
+      .then((response) => {
+        if(response.data.data.length>0)
+        {
+          const {id_card,FullName}= response.data.data[0];
+          setCurrentUser([{
+            id: id_card,
+            name : FullName
+          }])
+          console.log(response.data.data[0])
+          callback(false,response.data.message);
+        }
+        else
+          callback(true, "Incorrect Username or Password")
+      })
+      .catch((error) => {
+          callback(true,"Error Occurred During Authentication, Please try again")
+      });
+  };
 
   return (
     <ContextAPI.Provider
       value={{
         user: state.currentUser,
+        saving: state.saving,
         hasError: state.hasError,
         errorMessage: state.errorMessage,
         successMessage: state.successMessage,
@@ -93,6 +120,7 @@ export const ContextAPIProvider = ({ children }) => {
         setCurrentUser,
         logout,
         registerStudent,
+        authLogin
       }}
     >
       {children}
