@@ -89,6 +89,40 @@ module.exports = {
       return res.status(500).json("Internal Server Error, Try Again");
     }
   },
+  readProjectsForAdmins: (req, res) => {
+    try {
+      var q =
+        "SELECT *from _views_students_project";
+      dbConn.query(q, (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+  updateStatus: (req, res) => {
+    try {
+      var q =
+        "UPDATE projects set status=? where id=? and student=?";
+      dbConn.query(q,[req.body.status,req.body.pId,req.body.stdId], (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
   readTypes: (req, res) => {
     try {
       var q = "SELECT * FROM `projectType`";

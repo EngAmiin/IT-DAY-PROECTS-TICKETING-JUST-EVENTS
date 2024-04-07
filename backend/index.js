@@ -10,8 +10,10 @@ app.use(cors())
 
 // routes
 const stdRouter = require("./routes/students.route");
+const userRouter = require("./routes/user.route");
 
 app.use("/portal/student",stdRouter);
+app.use("/portal/user",userRouter);
 
 // listen
 
