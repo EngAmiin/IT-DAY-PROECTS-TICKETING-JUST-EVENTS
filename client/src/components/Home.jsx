@@ -1,4 +1,4 @@
-import React, { useContext,useState } from 'react'
+import React, { useContext,useEffect,useState } from 'react'
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -9,9 +9,15 @@ import Image from "react-bootstrap/Image";
 import { useMediaQuery } from "@mui/material";
 import TopTalents from './TopTalents';
 import ListGroup from "react-bootstrap/ListGroup";
+import { ContextAPI } from '../context/Provider';
 
 export default function Home() {
     const isMobileOrMd = useMediaQuery("(max-width: 768px)");
+    const {getCurrentUser,user}=useContext(ContextAPI)
+
+    useEffect(() => {
+      getCurrentUser();
+    }, [user]);
   
   return (
     <Container style={{ marginTop: "4rem" }}>

@@ -31,11 +31,11 @@ module.exports = {
   registerStudent: (req, res) => {
     try {
       var q =
-        "INSERT INTO students(FullName,mobile,email,password,id_card,semester) VALUES(?,?,?,?,?,?)";
-      const { name, mobile, email, password, id_card, semester } = req.body;
+        "INSERT INTO students(FullName,mobile,email,password,id_card,semester,event) VALUES(?,?,?,?,?,?,?)";
+      const { name, mobile, email, password, id_card, semester,event } = req.body;
       dbConn.query(
         q,
-        [name, mobile, email, password, id_card, semester],
+        [name, mobile, email, password, id_card, semester,event],
         (err, result) => {
           if (err)
             return res.status(500).json({
@@ -71,6 +71,25 @@ module.exports = {
       return res.status(500).json("Internal Server Error, Try Again");
     }
   },
+  fetchStudentRangeByEvent: (req, res) => {
+    try {
+      var q = "CALL sp_getCorumEvent(?)";
+      const { id } = req.params;
+      dbConn.query(q, [id], (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res
+          .status(200)
+          .json({data: result[0] });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
   readProjectsForUsers: (req, res) => {
     try {
       var q =
@@ -91,8 +110,7 @@ module.exports = {
   },
   readProjectsForAdmins: (req, res) => {
     try {
-      var q =
-        "SELECT *from _views_students_project";
+      var q = "SELECT *from _views_students_project";
       dbConn.query(q, (err, result) => {
         if (err)
           return res.status(500).json({
@@ -108,17 +126,20 @@ module.exports = {
   },
   updateStatus: (req, res) => {
     try {
-      var q =
-        "UPDATE projects set status=? where id=? and student=?";
-      dbConn.query(q,[req.body.status,req.body.pId,req.body.stdId], (err, result) => {
-        if (err)
-          return res.status(500).json({
-            message: "Error",
-            description: err.message,
-          });
+      var q = "UPDATE projects set status=? where id=? and student=?";
+      dbConn.query(
+        q,
+        [req.body.status, req.body.pId, req.body.stdId],
+        (err, result) => {
+          if (err)
+            return res.status(500).json({
+              message: "Error",
+              description: err.message,
+            });
 
-        return res.status(200).json({ data: result });
-      });
+          return res.status(200).json({ data: result });
+        }
+      );
     } catch (err) {
       return res.status(500).json("Internal Server Error, Try Again");
     }
@@ -139,12 +160,44 @@ module.exports = {
       return res.status(500).json("Internal Server Error, Try Again");
     }
   },
+  readSemesters: (req, res) => {
+    try {
+      var q = "SELECT * FROM `semesters`";
+      dbConn.query(q, (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
   removeProject: (req, res) => {
     try {
-      var q =
-        "DELETE FROM projects where projects.id=? and projects.student=?";
-      const { projectId,studentId } = req.params;
-      dbConn.query(q, [projectId,studentId], (err, result) => {
+      var q = "DELETE FROM projects where projects.id=? and projects.student=?";
+      const { projectId, studentId } = req.params;
+      dbConn.query(q, [projectId, studentId], (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+
+  readActiveEvent: (req, res) => {
+    try {
+      var q = "SELECT id,eventName as event FROM `Events` WHERE status='active'ORDER BY year DESC LIMIT 1";
+      dbConn.query(q, (err, result) => {
         if (err)
           return res.status(500).json({
             message: "Error",

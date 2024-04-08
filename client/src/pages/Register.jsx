@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -11,17 +11,25 @@ import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 export default function Register() {
   var navigate = useNavigate();
+  const ref = useRef()
   const [show,setShow]=useState(false);
-  const { saving,registerStudent, hasError, errorMessage, successMessage } =
+  const {readSemesters,semesters,checkStudentRange, readActiveEvent,activeEvent, saving,registerStudent, hasError, errorMessage, successMessage } =
     useContext(ContextAPI);
   const [data, setData] = useState({
     name: "",
     mobile: "",
     email: "",
     password: "",
-    semester: 1,
+    semester: '',
     id_card: "",
+    event: activeEvent?.id,
   });
+
+  useEffect(()=>{
+    readActiveEvent(function(){});
+    readSemesters(function () {});
+    console.log(activeEvent)
+  },[])
 
   const handleChange = (e) =>
     setData({
@@ -31,18 +39,26 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    registerStudent(data,async (err,res)=>{
-      if(err){
-        toast.error(res);
-        return
+    checkStudentRange(activeEvent?.id,(err,res)=>{
+      if(err)
+      {
+        toast.error(res, {
+          duration: 9000,
+        });
+        return;
       }
-    toast.success(res);
-    setTimeout(() => {
-      navigate('/')
-    }, 2000);
-      
-
+      registerStudent(data, async (err, res) => {
+        if (err) {
+          toast.error(res);
+          return;
+        }
+        toast.success(res);
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      });
     });
+    
   };
 
 
@@ -120,18 +136,16 @@ export default function Register() {
               <Form.Label>Semester</Form.Label>
               <Form.Select
                 className="border"
+                name='semester'
+                value={data.semester}
+                onChange={handleChange}
                 aria-label="Default select example"
               >
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3" selected>
-                  Three
-                </option>
-                <option value="4">Four</option>
-                <option value="5">Five</option>
-                <option value="6">Six</option>
-                <option value="7">Seven</option>
-                <option value="8">Eight</option>
+                <option value="">Select Semester</option>
+                {semesters && semesters.map(semester=>{
+                  return <option value={semester.id}>{semester.name}</option>
+                })}
+              
               </Form.Select>
             </Form.Group>
           </Col>
@@ -145,6 +159,34 @@ export default function Register() {
                 className="border"
                 type="password"
               ></Form.Control>
+            </Form.Group>
+          </Col>
+          <Col lg={12} sm={12} md={12}>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>Active Event</Form.Label>
+              <Form.Select
+                disabled
+                defaultValue={activeEvent && activeEvent.id}
+                name="event"
+            
+                value={data.event}
+                onChange={handleChange}
+                aria-label="Default select example"
+              >
+                {Object.keys(activeEvent).length > 0 ? (
+                  <option value={activeEvent && activeEvent.id}>
+                    {activeEvent && activeEvent.event}
+                  </option>
+                ) : (
+                  <option value="">
+                    There is No Active Events, To Submit Ths Project
+                  </option>
+                )}
+              </Form.Select>
+              <strong className="text-danger fs-6">
+                ** Only You Can Join Active Events{" "}
+                {activeEvent && activeEvent.event}
+              </strong>
             </Form.Group>
           </Col>
           <Col lg={12} md={12} sm={12} xs={12} className="mb-2">

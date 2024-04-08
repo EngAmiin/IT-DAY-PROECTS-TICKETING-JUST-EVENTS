@@ -7,10 +7,13 @@ import { ContextAPI } from "../context/Provider";
 import { Toaster, toast } from "react-hot-toast";
 
 export default function AddProjectModal({ show, handleClose }) {
-  const { registerProject, user, getCurrentUser, readProjects } =
+  const {readActiveEvent,activeEvent, readProjectTypes,projectTypes,registerProject, user, getCurrentUser, readProjects } =
     useContext(ContextAPI);
     useEffect(()=>{
       getCurrentUser();
+      readProjectTypes(function(){});
+      readActiveEvent(function () {});
+      console.log("projectTypes")
     },[])
 
   const [projectData, setProjectData] = useState({
@@ -88,14 +91,21 @@ export default function AddProjectModal({ show, handleClose }) {
               >
                 <Form.Label>Type</Form.Label>
                 <Form.Select
-                  defaultValue={"1"}
+                  defaultValue={""}
                   name="type"
                   value={projectData.type}
                   onChange={onChangeValues}
                   aria-label="Default select example"
                 >
-                  <option value="1">web</option>
-                  <option value="2">mobile</option>
+                  <option value="">Select Project Types</option>
+                  {projectTypes &&
+                    projectTypes.map((projectType) => {
+                      return (
+                        <option value={projectType.id}>
+                          {projectType.type}
+                        </option>
+                      );
+                    })}
                 </Form.Select>
               </Form.Group>
             </Col>
@@ -105,14 +115,28 @@ export default function AddProjectModal({ show, handleClose }) {
                 controlId="exampleForm.ControlInput1"
               >
                 <Form.Label>Active Event</Form.Label>
-                <Form.Control
+                <Form.Select
+                  disabled
+                  defaultValue={activeEvent && activeEvent.id}
                   name="event"
                   value={projectData.event}
                   onChange={onChangeValues}
-                  type="text"
-                  disabled
-                  placeholder="Auto Load"
-                />
+                  aria-label="Default select example"
+                >
+                  {Object.keys(activeEvent).length >0 ? (
+                    <option value={activeEvent && activeEvent.id}>
+                      {activeEvent && activeEvent.event}
+                    </option>
+                  ) : (
+                    <option value="">
+                      There is No Active Events, To Submit Ths Project
+                    </option>
+                  )}
+                </Form.Select>
+                <strong className="text-danger fs-6">
+                  ** Only You Can Join Active Events{" "}
+                  {activeEvent && activeEvent.event}
+                </strong>
               </Form.Group>
             </Col>
             <Col lg={12} sm={12} md={12}>

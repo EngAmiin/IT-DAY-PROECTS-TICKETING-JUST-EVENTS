@@ -9,8 +9,9 @@ import { ContextAPI } from "../context/Provider";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router";
 import Confirm from "../components/Confirm";
+import { ColorRing } from "react-loader-spinner";
 export default function Projects() {
-  const { removeProject, projectsByUser, user, getCurrentUser, readProjects } =
+  const {pending, removeProject, projectsByUser, user, getCurrentUser, readProjects } =
     useContext(ContextAPI);
   const [open, setOpen] = useState(false);
   const [confirmModal, setConfirmModel] = useState(false);
@@ -104,7 +105,7 @@ export default function Projects() {
   return (
     <Container style={{ marginTop: "4rem" }}>
       <Toaster position="top-center" reverseOrder={false} />
-      <Card className='box-shadow'>
+      <Card className="box-shadow">
         <Card.Body>
           <Row className="mb-3">
             <Col lg={10} md={12} sm={12} xs={12}>
@@ -117,6 +118,18 @@ export default function Projects() {
             </Col>
           </Row>
           <DataTable
+            progressPending={pending}
+            progressComponent={
+              <ColorRing
+                visible={true}
+                height="80"
+                width="80"
+                ariaLabel="color-ring-loading"
+                wrapperStyle={{}}
+                wrapperClass="color-ring-wrapper"
+                colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+              />
+            }
             customStyles={{
               cells: {
                 style: {
