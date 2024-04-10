@@ -10,6 +10,7 @@ import { useMediaQuery } from "@mui/material";
 import TopTalents from './TopTalents';
 import ListGroup from "react-bootstrap/ListGroup";
 import { ContextAPI } from '../context/Provider';
+import Report from './Report';
 
 export default function Home() {
     const isMobileOrMd = useMediaQuery("(max-width: 768px)");
@@ -66,6 +67,7 @@ export default function Home() {
           </Card>
         </Col>
       </Row>
+      <Report/>
       <TopTalents />
     </Container>
   );
