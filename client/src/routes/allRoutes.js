@@ -2,6 +2,7 @@ import Home from '../components/Home'
 import Projects from '../pages/Projects';
 import Register from '../pages/Register'
 import Login from '../pages/Login';
+import Profile from '../pages/profile';
 export const routes = [
   {
     path: "/",
@@ -21,6 +22,11 @@ export const routes = [
   {
     path: "/login",
     component: Login,
+    exact: true,
+  },
+  {
+    path: "/account",
+    component: Profile,
     exact: true,
   },
 ];

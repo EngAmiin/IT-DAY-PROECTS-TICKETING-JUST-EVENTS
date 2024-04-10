@@ -17,7 +17,7 @@ export default function Home() {
 
     useEffect(() => {
       getCurrentUser();
-    }, [user]);
+    }, []);
   
   return (
     <Container style={{ marginTop: "4rem" }}>

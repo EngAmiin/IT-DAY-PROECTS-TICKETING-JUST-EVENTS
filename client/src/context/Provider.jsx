@@ -1,7 +1,8 @@
 import { createContext, useReducer } from "react";
 import { DEV_PRODUCTION } from "../config/url";
 import {
-  FETCH_PROJECTS_FOR_USER,ERROR,
+  FETCH_PROJECTS_FOR_USER,
+  ERROR,
   SAVING,
   GET_CURRENT_USER,
   INSERT_USER,
@@ -10,8 +11,10 @@ import {
   FETCH_ACTIVE_EVENT,
   FETCH_SEMESTERS,
   SET_SAVING,
+  FETCH_CURRENT_USER,
+  SET_LOAD,
 } from "./actions";
-import axios from 'axios'
+import axios from "axios";
 const initialState = {
   currentUser: [],
   allProjects: [],
@@ -19,11 +22,13 @@ const initialState = {
   projectTypes: [],
   semesters: [],
   activeEvent: {},
+  currentUserData: {},
   successMessage: "",
   errorMessage: "",
   hasError: false,
   pending: false,
   saving: false,
+  load: false,
 };
 
 const reducer = (state, action) => {
@@ -46,6 +51,13 @@ const reducer = (state, action) => {
         ...state,
         saving: false,
         activeEvent: { ...action.payload },
+      };
+    case FETCH_CURRENT_USER:
+      return {
+        ...state,
+        load: false,
+        saving: false,
+        currentUserData: { ...action.payload },
       };
     case FETCH_TYPES:
       return {
@@ -90,6 +102,11 @@ const reducer = (state, action) => {
         ...state,
         saving: false,
       };
+    case SET_LOAD:
+      return {
+        ...state,
+        load: action.payload,
+      };
 
     default:
       break;
@@ -111,8 +128,8 @@ export const ContextAPIProvider = ({ children }) => {
       });
   };
   const setCurrentUser = async (userData) => {
-    localStorage.setItem("user",JSON.stringify(userData));
-     getCurrentUser();
+    localStorage.setItem("user", JSON.stringify(userData));
+    getCurrentUser();
   };
   const logout = async () => {
     localStorage.clear();
@@ -126,76 +143,83 @@ export const ContextAPIProvider = ({ children }) => {
     axios
       .post(`${DEV_PRODUCTION}student`, studentData)
       .then((response) => {
-        callback(false,response.data.message);
+        callback(false, response.data.message);
       })
       .catch((error) => {
-          callback(true,"Error Occurred During Creation, Please try again")
+        callback(true, "Error Occurred During Creation, Please try again");
       });
   };
-   const registerProject = async (data, callback) => {
-     dispatch({
-       type: SAVING,
-     });
-     axios
-       .post(`${DEV_PRODUCTION}student/submitProject`, data)
-       .then((response) => {
-         callback(false, "Project Has Been Created");
-       })
-       .catch((error) => {
-         callback(true, "Error Occurred During Creation, Please try again");
-       });
-   };
+  const registerProject = async (data, callback) => {
+    dispatch({
+      type: SAVING,
+    });
+    axios
+      .post(`${DEV_PRODUCTION}student/submitProject`, data)
+      .then((response) => {
+        callback(false, "Project Has Been Created");
+      })
+      .catch((error) => {
+        callback(true, "Error Occurred During Creation, Please try again");
+      });
+  };
   const authLogin = async (studentData, callback) => {
     dispatch({
       type: SAVING,
     });
     axios
-      .get(`${DEV_PRODUCTION}student/${studentData.id_card}/${studentData.password}`)
+      .get(
+        `${DEV_PRODUCTION}student/${studentData.id_card}/${studentData.password}`
+      )
       .then((response) => {
-        if(response.data.data.length>0)
-        {
-          const {id_card,FullName,id}= response.data.data[0];
-          setCurrentUser([{
-            card: id_card,
-            name : FullName,
-            id: id
-          }])
-          console.log(response.data.data[0])
-          callback(false,response.data.message);
-        }
-        else
-          callback(true, "Incorrect Username or Password")
+        if (response.data.data.length > 0) {
+          const { id_card, FullName, id } = response.data.data[0];
+          setCurrentUser([
+            {
+              card: id_card,
+              name: FullName,
+              id: id,
+            },
+          ]);
+          console.log(response.data.data[0]);
+          callback(false, response.data.message);
+        } else callback(true, "Incorrect Username or Password");
       })
       .catch((error) => {
-          callback(true,"Error Occurred During Authentication, Please try again")
+        callback(
+          true,
+          "Error Occurred During Authentication, Please try again"
+        );
       });
   };
   const readProjects = async (id, callback) => {
     dispatch({
-      type: SAVING
-    })
+      type: SAVING,
+    });
     axios
       .get(`${DEV_PRODUCTION}student/projects/${id}`)
       .then((response) => {
-       
-       dispatch({
-        type: FETCH_PROJECTS_FOR_USER,
-        payload: response.data.data
-       })
+        dispatch({
+          type: FETCH_PROJECTS_FOR_USER,
+          payload: response.data.data,
+        });
       })
       .catch((error) => {
-          callback(true,"Error Occurred During Authentication, Please try again")
-            dispatch({
-      type: SET_SAVING
-    })
+        callback(
+          true,
+          "Error Occurred During Authentication, Please try again"
+        );
+        dispatch({
+          type: SET_SAVING,
+        });
       });
-   
   };
   const removeProject = async (data, callback) => {
     axios
-      .delete(`${DEV_PRODUCTION}student/remove/${data.projectId}/${data.studentId}`)
+      .delete(
+        `${DEV_PRODUCTION}student/remove/${data.projectId}/${data.studentId}`
+      )
       .then((response) => {
-        callback(false,"Project Has been removed");
+        callback(false, "Project Has been removed");
       })
       .catch((error) => {
         callback(
@@ -206,45 +230,102 @@ export const ContextAPIProvider = ({ children }) => {
   };
 
   const readProjectTypes = async (callback) => {
-      axios
-        .get(`${DEV_PRODUCTION}student/readTypes`)
-        .then((response) => {
-          dispatch({
-            type: FETCH_TYPES,
-            payload: response.data.data,
-          });
-        })
-        .catch((error) => {
+    axios
+      .get(`${DEV_PRODUCTION}student/readTypes`)
+      .then((response) => {
+        dispatch({
+          type: FETCH_TYPES,
+          payload: response.data.data,
+        });
+      })
+      .catch((error) => {
+        callback(
+          true,
+          "Error Occurred During Authentication, Please try again"
+        );
+      });
+  };
+
+  const readSemesters = async (callback) => {
+    axios
+      .get(`${DEV_PRODUCTION}student/semesters`)
+      .then((response) => {
+        dispatch({
+          type: FETCH_SEMESTERS,
+          payload: response.data.data,
+        });
+      })
+      .catch((error) => {
+        callback(
+          true,
+          "Error Occurred During Authentication, Please try again"
+        );
+      });
+  };
+
+  const readActiveEvent = async (callback) => {
+    axios
+      .get(`${DEV_PRODUCTION}student/active-event`)
+      .then((response) => {
+        dispatch({
+          type: FETCH_ACTIVE_EVENT,
+          payload: response.data.data[0],
+        });
+      })
+      .catch((error) => {
+        callback(
+          true,
+          "Error Occurred During Authentication, Please try again"
+        );
+      });
+  };
+
+  const checkStudentRange = async (eventId, callback) => {
+    axios
+      .get(`${DEV_PRODUCTION}student/eventRange/${eventId}`)
+      .then((response) => {
+        const { PredefinedStudents, currentStudents } = response.data.data[0];
+        if (currentStudents >= PredefinedStudents) {
           callback(
             true,
-            "Error Occurred During Authentication, Please try again"
+            "The maximum number of students for this event has been reached. Kindly make arrangements for the upcoming IT-DAY 🤗."
           );
-        });
-    };
+        } else callback(false, null);
+      })
+      .catch((error) => {
+        callback(
+          true,
+          "Error Occurred During Authentication, Please try again"
+        );
+      });
+  };
 
-      const readSemesters = async (callback) => {
+   const updateProfile = async (data,callback) => {
+    axios
+      .post(`${DEV_PRODUCTION}student/profile`,data)
+      .then((response) => {
+        if(response.data.type==="data")
+        callback(false,"Your Profile Has been Updated");
+      else
+       callback(false,"Your Privacy has been updated");
+      })
+      .catch((error) => {
+        callback(
+          true,
+          "Error Occurred During Authentication, Please try again"
+        );
+      });
+  };
+   const getCurrentUserData = async (id,callback) => {
+     dispatch({
+       type: SET_LOAD,
+       payload: true,
+     });
         axios
-          .get(`${DEV_PRODUCTION}student/semesters`)
+          .get(`${DEV_PRODUCTION}student/current/${id}`)
           .then((response) => {
             dispatch({
-              type: FETCH_SEMESTERS,
-              payload: response.data.data,
-            });
-          })
-          .catch((error) => {
-            callback(
-              true,
-              "Error Occurred During Authentication, Please try again"
-            );
-          });
-      };
-
-      const readActiveEvent = async (callback) => {
-        axios
-          .get(`${DEV_PRODUCTION}student/active-event`)
-          .then((response) => {
-            dispatch({
-              type: FETCH_ACTIVE_EVENT,
+              type: FETCH_CURRENT_USER,
               payload: response.data.data[0],
             });
           })
@@ -256,26 +337,26 @@ export const ContextAPIProvider = ({ children }) => {
           });
       };
 
-       const checkStudentRange = async (eventId, callback) => {
-         axios
-           .get(`${DEV_PRODUCTION}student/eventRange/${eventId}`)
-           .then((response) => {
-             const { PredefinedStudents, currentStudents } =
-               response.data.data[0];
-             if (currentStudents >= PredefinedStudents) {
-               callback(
-                 true,
-                 "The maximum number of students for this event has been reached. Kindly make arrangements for the upcoming IT-DAY 🤗."
-               );
-             } else callback(false, null);
-           })
-           .catch((error) => {
+     const isValidCurrentPassword = async (id,data, callback) => {
+       axios
+         .get(`${DEV_PRODUCTION}student/checkPass/${id}`)
+         .then((response) => {
+           const { id,password } =
+             response.data.data[0];
+           if (password == data.currentPassword) {
              callback(
-               true,
-               "Error Occurred During Authentication, Please try again"
+               false
              );
-           });
-       };
+           } else callback(true, "You Provided Incorrect Password, As You Current password.");
+         })
+         .catch((error) => {
+           callback(
+             true,
+             "Error Occurred During Authentication, Please try again"
+           );
+         });
+     };
+
 
   return (
     <ContextAPI.Provider
@@ -284,12 +365,14 @@ export const ContextAPIProvider = ({ children }) => {
         projectsByUser: state.projectsByUser,
         saving: state.saving,
         pending: state.pending,
+        load: state.load,
         semesters: state.semesters,
         hasError: state.hasError,
         errorMessage: state.errorMessage,
         successMessage: state.successMessage,
         projectTypes: state.projectTypes,
         activeEvent: state.activeEvent,
+        currentUserData: state.currentUserData,
         getCurrentUser,
         readProjectTypes,
         setCurrentUser,
@@ -301,7 +384,10 @@ export const ContextAPIProvider = ({ children }) => {
         readProjects,
         registerProject,
         removeProject,
+        getCurrentUserData,
         checkStudentRange,
+        updateProfile,
+        isValidCurrentPassword
       }}
     >
       {children}

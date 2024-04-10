@@ -29,18 +29,19 @@ export default function Nav() {
                   <Link to="/projects" className="mx-2">
                     My Projects
                   </Link>
-                  <a href="#login">Account</a>
-                  <Link
-                    to={"/login"}
-                    className="mx-2"
-                  >
+                  <Link to={"/account"}>
+                    Account
+                  </Link>
+                  <Link to={"/login"} className="mx-2">
                     Logout
                   </Link>
                 </>
               ) : (
                 <>
                   <Link to="/register">Join Now</Link>
-                  <Link  className="mx-2" to="/login">Login</Link>
+                  <Link className="mx-2" to="/login">
+                    Login
+                  </Link>
                 </>
               )}
             </Navbar.Text>

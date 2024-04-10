@@ -32,10 +32,11 @@ module.exports = {
     try {
       var q =
         "INSERT INTO students(FullName,mobile,email,password,id_card,semester,event) VALUES(?,?,?,?,?,?,?)";
-      const { name, mobile, email, password, id_card, semester,event } = req.body;
+      const { name, mobile, email, password, id_card, semester, event } =
+        req.body;
       dbConn.query(
         q,
-        [name, mobile, email, password, id_card, semester,event],
+        [name, mobile, email, password, id_card, semester, event],
         (err, result) => {
           if (err)
             return res.status(500).json({
@@ -82,9 +83,7 @@ module.exports = {
             description: err.message,
           });
 
-        return res
-          .status(200)
-          .json({data: result[0] });
+        return res.status(200).json({ data: result[0] });
       });
     } catch (err) {
       return res.status(500).json("Internal Server Error, Try Again");
@@ -196,8 +195,79 @@ module.exports = {
 
   readActiveEvent: (req, res) => {
     try {
-      var q = "SELECT id,eventName as event FROM `Events` WHERE status='active'ORDER BY year DESC LIMIT 1";
+      var q =
+        "SELECT id,eventName as event FROM `Events` WHERE status='active'ORDER BY year DESC LIMIT 1";
       dbConn.query(q, (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+  readCurrentUser: (req, res) => {
+    try {
+      var q = "SELECT * FROM `students` WHERE id=?";
+      dbConn.query(q, [req.params.id], (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+  updateProfile: (req, res) => {
+    try {
+      if(req.body.type=="data"){
+  var q = "UPDATE`students` set email=?, mobile=? WHERE id=?";
+  dbConn.query(
+    q,
+    [req.body.email, req.body.mobile, req.body.id],
+    (err, result) => {
+      if (err)
+        return res.status(500).json({
+          message: "Error",
+          description: err.message,
+        });
+
+      return res.status(200).json({ type: "data", data: result });
+    }
+  );
+      }else{
+          var q = "UPDATE`students` set password=? WHERE id=?";
+          dbConn.query(
+            q,
+            [req.body.newPass,  req.body.id],
+            (err, result) => {
+              if (err)
+                return res.status(500).json({
+                  message: "Error",
+                  description: err.message,
+                });
+
+              return res.status(200).json({ type: "privacy", data: result });
+            }
+          );
+      }
+    
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+  geCurrentPassword: (req, res) => {
+    try {
+      var q = "SELECT id,password FROM `students` WHERE id=?";
+      dbConn.query(q, [req.params.id], (err, result) => {
         if (err)
           return res.status(500).json({
             message: "Error",
