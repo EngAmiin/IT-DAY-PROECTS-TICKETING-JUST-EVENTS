@@ -89,6 +89,38 @@ module.exports = {
       return res.status(500).json("Internal Server Error, Try Again");
     }
   },
+  fetchCurrentStudentsByEvent: (req, res) => {
+    try {
+      var q = "CALL `getEventStudents`();";
+      dbConn.query(q, (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result[0] });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+  fetchEventReport: (req, res) => {
+    try {
+      var q = "CALL `event_report`();";
+      dbConn.query(q, (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result[0] });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
   readProjectsForUsers: (req, res) => {
     try {
       var q =
@@ -267,6 +299,22 @@ module.exports = {
   geCurrentPassword: (req, res) => {
     try {
       var q = "SELECT id,password FROM `students` WHERE id=?";
+      dbConn.query(q, [req.params.id], (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+  fetchProjectsByType: (req, res) => {
+    try {
+      var q = "SELECT projectType.type as label, COUNT(projects.id) as value from projectType join projects ON projectType.id=projects.type WHERE projects.event in (SELECT Events.id from Events WHERE Events.status='Active' ORDER BY Events.year) group by projectType.type";
       dbConn.query(q, [req.params.id], (err, result) => {
         if (err)
           return res.status(500).json({
