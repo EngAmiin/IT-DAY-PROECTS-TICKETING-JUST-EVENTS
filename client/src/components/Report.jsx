@@ -1,15 +1,12 @@
 import React, { useContext, useEffect } from "react";
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Image from "react-bootstrap/Image";
 import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 import Progress from "./Progress";
 import Pie from "../charts/Pie";
 import { ContextAPI } from "../context/Provider";
 import { convertDatetimeToDate } from "../utils/fun.utils";
+
 
 export default function Report(props) {
   const {chartProjectsByType,getProjectsByType,getCurrentStudentsByEvent,STUDENTS_BY_EVENT,
