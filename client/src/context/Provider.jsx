@@ -1,6 +1,9 @@
 import { createContext, useReducer } from "react";
 import { DEV_PRODUCTION } from "../config/url";
 import {
+  EVENT_REPORT,
+  FETCH_STUDENTS_BY_EVENT,
+  FETCH_PROJECTS_BY_TYPE,
   FETCH_PROJECTS_FOR_USER,
   ERROR,
   SAVING,
@@ -21,8 +24,11 @@ const initialState = {
   projectsByUser: [],
   projectTypes: [],
   semesters: [],
+  chartProjectsByType : [],
   activeEvent: {},
   currentUserData: {},
+  STUDENTS_BY_EVENT: {},
+  event_report: {},
   successMessage: "",
   errorMessage: "",
   hasError: false,
@@ -59,6 +65,20 @@ const reducer = (state, action) => {
         saving: false,
         currentUserData: { ...action.payload },
       };
+    case EVENT_REPORT:
+      return {
+        ...state,
+        load: false,
+        saving: false,
+        event_report: { ...action.payload },
+      };
+    case FETCH_STUDENTS_BY_EVENT:
+      return {
+        ...state,
+        load: false,
+        saving: false,
+        STUDENTS_BY_EVENT: { ...action.payload },
+      };
     case FETCH_TYPES:
       return {
         ...state,
@@ -70,6 +90,12 @@ const reducer = (state, action) => {
         ...state,
         saving: false,
         semesters: [...action.payload],
+      };
+    case FETCH_PROJECTS_BY_TYPE:
+      return {
+        ...state,
+        saving: false,
+        chartProjectsByType: [...action.payload],
       };
     case SET_CURRENT_USER:
       return {
@@ -246,6 +272,55 @@ export const ContextAPIProvider = ({ children }) => {
       });
   };
 
+  const getProjectsByType = async (callback) => {
+    axios
+      .get(`${DEV_PRODUCTION}student/chart/projects/projectTypes`)
+      .then((response) => {
+        dispatch({
+          type: FETCH_PROJECTS_BY_TYPE,
+          payload: response.data.data,
+        });
+      })
+      .catch((error) => {
+        callback(
+          true,
+          "Error Occurred During Authentication, Please try again"
+        );
+      });
+  };
+  const loadActiveEventReport = async (callback) => {
+    axios
+      .get(`${DEV_PRODUCTION}student/chart/projects/event-report`)
+      .then((response) => {
+        dispatch({
+          type: EVENT_REPORT,
+          payload: response.data.data[0],
+        });
+      })
+      .catch((error) => {
+        callback(
+          true,
+          "Error Occurred During Authentication, Please try again"
+        );
+      });
+  };
+  const getCurrentStudentsByEvent = async (callback) => {
+    axios
+      .get(`${DEV_PRODUCTION}student/chart/projects/event`)
+      .then((response) => {
+        dispatch({
+          type: FETCH_STUDENTS_BY_EVENT,
+          payload: response.data.data[0],
+        });
+      })
+      .catch((error) => {
+        callback(
+          true,
+          "Error Occurred During Authentication, Please try again"
+        );
+      });
+  };
+
   const readSemesters = async (callback) => {
     axios
       .get(`${DEV_PRODUCTION}student/semesters`)
@@ -363,10 +438,13 @@ export const ContextAPIProvider = ({ children }) => {
       value={{
         user: state.currentUser,
         projectsByUser: state.projectsByUser,
+        chartProjectsByType: state.chartProjectsByType,
         saving: state.saving,
+        STUDENTS_BY_EVENT: state.STUDENTS_BY_EVENT,
         pending: state.pending,
         load: state.load,
         semesters: state.semesters,
+        event_report: state.event_report,
         hasError: state.hasError,
         errorMessage: state.errorMessage,
         successMessage: state.successMessage,
@@ -387,7 +465,11 @@ export const ContextAPIProvider = ({ children }) => {
         getCurrentUserData,
         checkStudentRange,
         updateProfile,
-        isValidCurrentPassword
+        isValidCurrentPassword,
+        getProjectsByType,
+        getCurrentStudentsByEvent,
+        loadActiveEventReport
+        
       }}
     >
       {children}

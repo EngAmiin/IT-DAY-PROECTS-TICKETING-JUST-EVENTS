@@ -1,7 +1,7 @@
 import React from 'react'
 import ProgressBar from "@ramonak/react-progress-bar";
-export default function Progress() {
+export default function Progress({maxCompletedCount, completedCount}) {
   return (
-   <ProgressBar  animateOnRender completed={"17"} maxCompleted={20}/>
+   <ProgressBar  animateOnRender completed={completedCount} maxCompleted={maxCompletedCount}/>
   )
 }
