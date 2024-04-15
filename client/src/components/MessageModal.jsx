@@ -11,7 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
-import { TextField } from '@mui/material';
+import { Container, Grid, TextField } from '@mui/material';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
@@ -42,14 +42,29 @@ export default function MessageModal({open,handleClose}) {
             </Button>
           </Toolbar>
         </AppBar>
-        <TextField
-          id="standard-multiline-static"
-         
+        <Container sx={{p: 5}}>
+            <Grid container spacing={2}>
+                <Grid item  xs={12} sm={12}  lg={6} md={12}>
+                <TextField fullWidth id="outlined-basic" label="Your FullName" variant="outlined" />
+                </Grid>
+                <Grid item  xs={12} sm={12}  lg={6} md={12}>
+                <TextField fullWidth id="outlined-basic" label="Your ClassName" variant="outlined" />
+                </Grid>
+                <Grid item lg={12} xs={12} sm={12} md={12}>
+                <TextField
+                rows={10}
+          id="outlined-multiline-flexible"
+          label="Message"
           multiline
-          rows={42}
-          placeholder='Type Your message 😊'
-          variant="filled"
+          placeholder='type your message 😊'
+          maxRows={50}
+          fullWidth
         />
+                </Grid>
+            </Grid>
+
+    
+        </Container>
       </Dialog>
   )
 }
