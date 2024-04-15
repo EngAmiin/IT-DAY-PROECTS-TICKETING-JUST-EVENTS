@@ -11,7 +11,7 @@ import MessageModal from './MessageModal';
 export default function FAQ() {
     const [open, setOpen] = useState(false)
   return (
-    <Container style={{ marginTop: "6rem", marginBottom: "10px" }}>
+    <Container style={{ marginTop: "6rem", marginBottom: "10px" , width: "100%"}}>
         <MessageModal open={open} handleClose={()=> setOpen(false)}/>
     <h4 className="my-5 text-center">How It Works</h4>
     <Card className="border-0 box-shadow">
