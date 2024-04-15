@@ -6,7 +6,7 @@ import Progress from "./Progress";
 import Pie from "../charts/Pie";
 import { ContextAPI } from "../context/Provider";
 import { convertDatetimeToDate } from "../utils/fun.utils";
-
+import Skeleton from '@mui/material/Skeleton';
 
 export default function Report(props) {
   const {chartProjectsByType,getProjectsByType,getCurrentStudentsByEvent,STUDENTS_BY_EVENT,
@@ -40,20 +40,20 @@ export default function Report(props) {
             </thead>
             <tbody>
               <tr>
-                <td>{event_report.id}</td>
-                <td>{event_report.eventName}</td>
-                <td>{convertDatetimeToDate(event_report.from_register)}</td>
-                <td>{convertDatetimeToDate(event_report.to_register)}</td>
+                <td>{event_report.id ?  event_report.id : <Skeleton  animation="wave" width={100}/>}</td>
+                <td>{event_report.eventName ?  event_report.eventName :  <Skeleton/>}</td>
+                <td>{event_report.from_register? convertDatetimeToDate(event_report.from_register): <Skeleton  animation="wave" width={100}/>}</td>
+                <td>{event_report.to_register ? convertDatetimeToDate(event_report.to_register) : <Skeleton  animation="wave" width={100}/>}</td>
              
               </tr>
 
               <tr>
                 <td>Start Date</td>
-                <td colSpan={4}>{convertDatetimeToDate(event_report.due_date)}</td>
+                <td colSpan={4}>{event_report.due_date ? convertDatetimeToDate(event_report.due_date) : <Skeleton  animation="wave" width={100}/>}</td>
               </tr>
               <tr>
                 <td colSpan={2}>Number Of Students Allowed</td>
-                <td colSpan={2}>{STUDENTS_BY_EVENT.RangeStudents? `${STUDENTS_BY_EVENT.RangeStudents} Students`: "Loading"} </td>
+                <td colSpan={2}>{STUDENTS_BY_EVENT.RangeStudents? `${STUDENTS_BY_EVENT.RangeStudents} Students`: <Skeleton  animation="wave" width={100}/>} </td>
               </tr>
               <tr>
                 <td className="p-3" colSpan={5}>
@@ -72,7 +72,9 @@ export default function Report(props) {
               </tr>
               <tr>
                 <td colSpan={5}>
-                    <Pie pieData={chartProjectsByType}/>
+                  
+                    <Pie pieData={chartProjectsByType}/> 
+                    
                 </td>
               </tr>
             </tfoot>
