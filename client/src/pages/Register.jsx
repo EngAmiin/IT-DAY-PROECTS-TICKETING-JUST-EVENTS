@@ -34,6 +34,7 @@ export default function Register() {
   const handleChange = (e) =>
     setData({
       ...data,
+      event: activeEvent.id,
       [e.target.name]: e.target.value,
     });
 
@@ -42,6 +43,7 @@ export default function Register() {
     checkStudentRange(activeEvent?.id,(err,res)=>{
       if(err)
       {
+        console.log("failed to check student ")
         toast.error(res, {
           duration: 9000,
         });
@@ -168,9 +170,6 @@ export default function Register() {
                 disabled
                 defaultValue={activeEvent && activeEvent.id}
                 name="event"
-            
-                value={data.event}
-                onChange={handleChange}
                 aria-label="Default select example"
               >
                 {Object.keys(activeEvent).length > 0 ? (

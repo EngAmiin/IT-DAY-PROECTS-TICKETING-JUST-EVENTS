@@ -167,7 +167,7 @@ export const ContextAPIProvider = ({ children }) => {
       type: SAVING,
     });
     axios
-      .post(`${DEV_PRODUCTION}student`, studentData)
+      .post(`${DEV_PRODUCTION}student/registerStudent`, studentData)
       .then((response) => {
         callback(false, response.data.message);
       })

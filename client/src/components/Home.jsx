@@ -11,6 +11,7 @@ import TopTalents from './TopTalents';
 import ListGroup from "react-bootstrap/ListGroup";
 import { ContextAPI } from '../context/Provider';
 import Report from './Report';
+import FAQ from './faq';
 
 export default function Home() {
     const isMobileOrMd = useMediaQuery("(max-width: 768px)");
@@ -68,6 +69,7 @@ export default function Home() {
         </Col>
       </Row>
       <Report/>
+      <FAQ/>
       <TopTalents />
     </Container>
   );
