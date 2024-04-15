@@ -175,6 +175,17 @@ export const ContextAPIProvider = ({ children }) => {
         callback(true, "Error Occurred During Creation, Please try again");
       });
   };
+  const sendMessage = async (data, callback) => {
+   
+    axios
+      .post(`${DEV_PRODUCTION}messages/`, data)
+      .then((response) => {
+        callback(false, "Your message has been recieved");
+      })
+      .catch((error) => {
+        callback(true, "Error Occurred During Sending, Please try again");
+      });
+  };
   const registerProject = async (data, callback) => {
     dispatch({
       type: SAVING,
@@ -468,8 +479,8 @@ export const ContextAPIProvider = ({ children }) => {
         isValidCurrentPassword,
         getProjectsByType,
         getCurrentStudentsByEvent,
-        loadActiveEventReport
-        
+        loadActiveEventReport,
+        sendMessage,
       }}
     >
       {children}

@@ -22,6 +22,7 @@ export default function Register() {
     password: "",
     semester: '',
     id_card: "",
+    className :"",
     event: activeEvent?.id,
   });
 
@@ -138,17 +139,29 @@ export default function Register() {
               <Form.Label>Semester</Form.Label>
               <Form.Select
                 className="border"
-                name='semester'
+                name="semester"
                 value={data.semester}
                 onChange={handleChange}
                 aria-label="Default select example"
               >
                 <option value="">Select Semester</option>
-                {semesters && semesters.map(semester=>{
-                  return <option value={semester.id}>{semester.name}</option>
-                })}
-              
+                {semesters &&
+                  semesters.map((semester) => {
+                    return <option value={semester.id}>{semester.name}</option>;
+                  })}
               </Form.Select>
+            </Form.Group>
+          </Col>
+          <Col lg={12} md={12} sm={12} xs={12} className="mb-2">
+            <Form.Group className="mb-2">
+              <Form.Label>Class</Form.Label>
+              <Form.Control
+                name="className"
+                value={data.className}
+                onChange={handleChange}
+                className="border"
+                type="text"
+              ></Form.Control>
             </Form.Group>
           </Col>
           <Col lg={12} md={12} sm={12} xs={12} className="mb-2">
@@ -188,12 +201,12 @@ export default function Register() {
               </strong>
             </Form.Group>
           </Col>
-          <Col lg={12} md={12} sm={12} xs={12} className="mb-2">
+          {/* <Col lg={12} md={12} sm={12} xs={12} className="mb-2">
             <Form.Group className="mb-2">
               <Form.Label>Profile (Optional)</Form.Label>
               <Form.Control className="border" type="file"></Form.Control>
             </Form.Group>
-          </Col>
+          </Col> */}
         </Row>
 
         <Button onClick={handleSubmit} variant="secondary" type="submit">
