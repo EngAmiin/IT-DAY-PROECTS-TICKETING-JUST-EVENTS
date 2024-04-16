@@ -23,12 +23,12 @@ export default function TopTalents() {
             />
             <Card.Body>
               <h4>Anzal Mohamuud</h4>
-              <p>
+              {/* <p>
                 Top Talented Best Graphic Design For The Year of 2023, Graded My
                 Gradualys
               </p>
 
-              <Button variant="outline-secondary">View Project(s)</Button>
+              <Button variant="outline-secondary">View Project(s)</Button> */}
             </Card.Body>
           </Card>
         </Col>
@@ -40,12 +40,12 @@ export default function TopTalents() {
             <Card.Img variant="top" src="../../user2.jpg" />
             <Card.Body>
               <h4>Nasra Mohamuud</h4>
-              <p>
+              {/* <p>
                 Top Talented Best Graphic Design For The Year of 2023, Graded My
                 Gradualys
               </p>
 
-              <Button variant="outline-secondary">View Project(s)</Button>
+              <Button variant="outline-secondary">View Project(s)</Button> */}
             </Card.Body>
           </Card>
         </Col>
@@ -57,12 +57,12 @@ export default function TopTalents() {
             <Card.Img variant="top" src="../../cj.PNG" />
             <Card.Body>
               <h4>ENG CJ</h4>
-              <p>
+              {/* <p>
                 Top Talented Best Graphic Design For The Year of 2023, Graded My
                 Gradualys
               </p>
 
-              <Button variant="outline-secondary">View Project(s)</Button>
+              <Button variant="outline-secondary">View Project(s)</Button> */}
             </Card.Body>
           </Card>
         </Col>

@@ -31,12 +31,12 @@ module.exports = {
   registerStudent: (req, res) => {
     try {
       var q =
-        "INSERT INTO students(FullName,mobile,email,password,id_card,semester,event) VALUES(?,?,?,?,?,?,?)";
-      const { name, mobile, email, password, id_card, semester, event } =
+        "INSERT INTO students(FullName,mobile,email,password,id_card,semester,event,class) VALUES(?,?,?,?,?,?,?,?)";
+      const { name, mobile, email, password, id_card, semester, event,className } =
         req.body;
       dbConn.query(
         q,
-        [name, mobile, email, password, id_card, semester, event],
+        [name, mobile, email, password, id_card, semester, event,className],
         (err, result) => {
           if (err)
             return res.status(500).json({
