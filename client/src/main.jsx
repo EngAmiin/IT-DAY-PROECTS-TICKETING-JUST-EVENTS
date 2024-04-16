@@ -5,6 +5,7 @@ import './custom/style.css'
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../fonts/poppins.css'
 import { ContextAPIProvider } from './context/Provider.jsx';
+import './locale/config.js'
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

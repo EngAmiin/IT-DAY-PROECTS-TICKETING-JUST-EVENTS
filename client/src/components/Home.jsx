@@ -1,4 +1,4 @@
-import React, { useContext,useEffect,useState } from 'react'
+import React, { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -7,20 +7,20 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 import { useMediaQuery } from "@mui/material";
-import TopTalents from './TopTalents';
+import TopTalents from "./TopTalents";
 import ListGroup from "react-bootstrap/ListGroup";
-import { ContextAPI } from '../context/Provider';
-import Report from './Report';
-import FAQ from './faq';
+import { ContextAPI } from "../context/Provider";
+import Report from "./Report";
+import FAQ from "./faq";
 
 export default function Home() {
-    const isMobileOrMd = useMediaQuery("(max-width: 768px)");
-    const {getCurrentUser,user}=useContext(ContextAPI)
+  const isMobileOrMd = useMediaQuery("(max-width: 768px)");
+  const { getCurrentUser, user } = useContext(ContextAPI);
 
-    useEffect(() => {
-      getCurrentUser();
-    }, []);
-  
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
   return (
     <Container style={{ marginTop: "4rem" }}>
       <Row>
@@ -68,9 +68,11 @@ export default function Home() {
           </Card>
         </Col>
       </Row>
-      <Report/>
-      <FAQ/>
+      <Report />
+      <FAQ />
       <TopTalents />
+
+     
     </Container>
   );
 }
