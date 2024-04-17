@@ -14,7 +14,7 @@
         },
         {
             "src": "/projects",
-            "dest": "/"
+            "dest": "/projects"
         }
     ]
 }
