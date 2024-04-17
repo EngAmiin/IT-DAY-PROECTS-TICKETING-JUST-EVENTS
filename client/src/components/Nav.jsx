@@ -5,10 +5,11 @@ import Alert from "react-bootstrap/Alert";
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router";
 import { ContextAPI } from '../context/Provider';
+import { useTranslation } from "react-i18next";
 export default function Nav() {
   const { logout,user } = useContext(ContextAPI);
   const navigate = useNavigate();
-  
+  const { t } = useTranslation();
   return (
     <>
       <Alert variant="success" className="text-center fw-bold">
@@ -27,20 +28,23 @@ export default function Nav() {
                 <>
                   {" "}
                   <Link to="/projects" className="mx-2">
-                    My Projects
+                    {t("My Projects")}
                   </Link>
                   <Link to={"/account"}>
-                    Account
+                   {t("Account")}
                   </Link>
                   <Link to={"/login"} className="mx-2">
-                    Logout
+                  {t("Logout")}
+                    
                   </Link>
                 </>
               ) : (
                 <>
-                  <Link to="/register">Join Now</Link>
+                  <Link to="/register">
+                    {t("Join Now")}</Link>
                   <Link className="mx-2" to="/login">
-                    Login
+                  {t("Login")}
+                    
                   </Link>
                 </>
               )}
