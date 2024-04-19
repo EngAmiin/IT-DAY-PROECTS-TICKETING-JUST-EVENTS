@@ -1,9 +1,32 @@
 const dbConn = require('../connection/conn.config');
+const convertDatetimeToDate = require('../utils/fun.utils')
 
 
 
 module.exports = {
-
+  checkRegistrationDueDate: (req, res) => {
+    try {
+      var q =
+        "SELECT to_register from Events where Events.status ='Active' ORDER BY Events.year LIMIT 1;";
+      dbConn.query(q, (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+     
+        const {to_register}=result[0];
+        const dueDate = convertDatetimeToDate(to_register);
+        const todaysDate = convertDatetimeToDate(new Date());
+           console.log(dueDate, todaysDate);
+        return res
+          .status(200)
+          .json({ hasReachedDueDate: dueDate === todaysDate });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
   readEvents: (req, res) => {
     try {
       var q =
@@ -38,25 +61,21 @@ module.exports = {
       return res.status(500).json("Internal Server Error, Try Again");
     }
   },
-  projectsByEvent: (req, res,next) => {
+  projectsByEvent: (req, res, next) => {
     try {
-    
       var q =
         "SELECT students.id_card,projects.ProjectName as Project, students.FullName from students join projects on students.id=projects.student where projects.event=?";
-      dbConn.query(q, [req.params.id],(err, result) => {
-        
+      dbConn.query(q, [req.params.id], (err, result) => {
         if (err)
           return res.status(500).json({
             message: "Error",
             description: err.message,
           });
 
-
-
         return res.status(200).json({ data: result });
       });
     } catch (err) {
       return res.status(500).json("Internal Server Error, Try Again");
     }
-  }
+  },
 };

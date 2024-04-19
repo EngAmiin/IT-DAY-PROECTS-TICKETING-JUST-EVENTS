@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-import {useNavigate}  from 'react-router'
 export function convertDatetimeToDate(datetimeStr) {
     const datetimeObj = new Date(datetimeStr);
     const year = datetimeObj.getFullYear();

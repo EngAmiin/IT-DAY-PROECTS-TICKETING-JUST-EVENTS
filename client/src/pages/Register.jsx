@@ -13,7 +13,11 @@ export default function Register() {
   var navigate = useNavigate();
   const ref = useRef()
   const [show,setShow]=useState(false);
-  const {readSemesters,semesters,checkStudentRange, readActiveEvent,activeEvent, saving,registerStudent, hasError, errorMessage, successMessage } =
+  const {
+    checkDueDate,
+    event_report,
+    loadActiveEventReport,
+    readSemesters,semesters,checkStudentRange, readActiveEvent,activeEvent, saving,registerStudent, hasError, errorMessage, successMessage } =
     useContext(ContextAPI);
   const [data, setData] = useState({
     name: "",
@@ -29,6 +33,7 @@ export default function Register() {
   useEffect(()=>{
     readActiveEvent(function(){});
     readSemesters(function () {});
+    loadActiveEventReport(function () {});
     console.log(activeEvent)
   },[])
 
@@ -41,26 +46,32 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    checkStudentRange(activeEvent?.id,(err,res)=>{
+    checkDueDate((err,res)=>{
       if(err)
-      {
-        console.log("failed to check student ")
-        toast.error(res, {
-          duration: 9000,
-        });
+        toast.error(res);
+      else{
+  checkStudentRange(activeEvent?.id, (err, res) => {
+    if (err) {
+      console.log("failed to check student ");
+      toast.error(res, {
+        duration: 9000,
+      });
+      return;
+    }
+    registerStudent(data, async (err, res) => {
+      if (err) {
+        toast.error(res);
         return;
       }
-      registerStudent(data, async (err, res) => {
-        if (err) {
-          toast.error(res);
-          return;
-        }
-        toast.success(res);
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
-      });
+      toast.success(res);
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     });
+  });
+      }
+    })
+  
     
   };
 
@@ -91,6 +102,13 @@ export default function Register() {
         }
       />
 
+      <Alerts
+        show={Object.keys(event_report).length == 0}
+        variant={"warning"}
+        message={
+          "Due to the absence of any active events available for registration at the moment, you are currently unable to create an account. However, you can join and participate in events only when they are active."
+        }
+      />
       <Toaster position="top-center" reverseOrder={false} />
       <h4 className="text-muted mb-4">Register Your Account</h4>
       <Form>
@@ -191,7 +209,7 @@ export default function Register() {
                   </option>
                 ) : (
                   <option value="">
-                    There is No Active Events, To Submit Ths Project
+                    There is No Active Events, To Register an account
                   </option>
                 )}
               </Form.Select>
@@ -209,7 +227,12 @@ export default function Register() {
           </Col> */}
         </Row>
 
-        <Button onClick={handleSubmit} variant="secondary" type="submit">
+        <Button
+          disabled={Object.keys(event_report).length == 0}
+          onClick={handleSubmit}
+          variant="secondary"
+          type="submit"
+        >
           Submit
         </Button>
       </Form>

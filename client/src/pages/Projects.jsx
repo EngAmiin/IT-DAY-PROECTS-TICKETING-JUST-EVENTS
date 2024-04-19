@@ -11,7 +11,7 @@ import { useNavigate } from "react-router";
 import Confirm from "../components/Confirm";
 import { ColorRing } from "react-loader-spinner";
 export default function Projects() {
-  const {pending, removeProject, projectsByUser, user, getCurrentUser, readProjects } =
+  const {event_report,loadActiveEventReport,pending, removeProject, projectsByUser, user, getCurrentUser, readProjects } =
     useContext(ContextAPI);
   const [open, setOpen] = useState(false);
   const [confirmModal, setConfirmModel] = useState(false);
@@ -46,6 +46,7 @@ export default function Projects() {
   };
   useEffect(() => {
     load();
+    loadActiveEventReport(function(){});
   }, []);
 
   const columns = [
@@ -112,7 +113,12 @@ export default function Projects() {
               <h4>My Projects 🔥💖</h4>
             </Col>
             <Col lg={2} md={12} sm={12} xs={12}>
-              <Button onClick={() => setOpen(true)} variant="outline-secondary">
+              <Button
+           //   title={Object.keys(event_report).length==0 ? "You can't add a project with no active event": ""}
+                disabled={Object.keys(event_report).length ==0}
+                onClick={() => setOpen(true)}
+                variant="outline-secondary"
+              >
                 Add New ✔
               </Button>
             </Col>

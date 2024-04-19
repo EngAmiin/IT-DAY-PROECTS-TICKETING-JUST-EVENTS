@@ -442,6 +442,23 @@ export const ContextAPIProvider = ({ children }) => {
            );
          });
      };
+     const checkDueDate = async (callback) => {
+       axios
+         .get(`${DEV_PRODUCTION}events/checkDueDate`)
+         .then((response) => {
+         
+             callback(
+               response.data.hasReachedDueDate,
+               "You can't register an account this date, Due To Due Date 😀. "
+             );
+         })
+         .catch((error) => {
+           callback(
+             true,
+             "Error Occurred During Authentication, Please try again"
+           );
+         });
+     };
 
 
   return (
@@ -481,6 +498,7 @@ export const ContextAPIProvider = ({ children }) => {
         getCurrentStudentsByEvent,
         loadActiveEventReport,
         sendMessage,
+        checkDueDate,
       }}
     >
       {children}
