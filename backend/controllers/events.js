@@ -44,6 +44,58 @@ module.exports = {
       return res.status(500).json("Internal Server Error, Try Again");
     }
   },
+  readAllEvents: (req, res) => {
+    try {
+      var q =
+        "SELECT * from Events ORDER BY Events.year DESC";
+      dbConn.query(q, (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+  createEvent: (req, res) => {
+    try {
+      var q =
+        "INSERT INTO `Events`(`eventName`, `year`, `from_register`, `to_register`, `due_date`, `no_students`, `status`) VALUES (?,?,?,?,?,?,?)";
+      dbConn.query(q,[req.body.event,req.body.year,req.body.from_reg,req.body.to_reg,
+      req.body.start_date,req.body.num_students,req.body.status], (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+  updateEventStatus: (req, res) => {
+    try {
+      var q =
+        "CALL updateEventStatus(?,?)";
+      dbConn.query(q,[req.body.id,req.body.status], (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res.status(200).json({ data: result });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
   readAllProjects: (req, res) => {
     try {
       var q =
