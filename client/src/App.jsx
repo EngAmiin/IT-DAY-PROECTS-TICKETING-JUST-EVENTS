@@ -17,10 +17,8 @@ function App() {
   };
 
   return (
-    <ThemeProvider  theme={darkMode ? darkTheme : lightTheme}>
-    <CssBaseline />
-    {/* Rest of your app content */}
-    <Paper>
+
+
       <Router>
         <Nav />
      <Routes> 
@@ -40,9 +38,7 @@ function App() {
        
         <Footer />
       </Router>
-    </Paper>
-    <DarkModeToggle darkMode={darkMode} onDarkModeToggle={handleDarkModeToggle} />
-  </ThemeProvider>
+
     
   );
 }
