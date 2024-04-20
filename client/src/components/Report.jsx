@@ -7,7 +7,7 @@ import Pie from "../charts/Pie";
 import { ContextAPI } from "../context/Provider";
 import { convertDatetimeToDate } from "../utils/fun.utils";
 import Skeleton from '@mui/material/Skeleton';
-
+import CountUp from 'react-countup';
 export default function Report(props) {
   const {chartProjectsByType,getProjectsByType,getCurrentStudentsByEvent,STUDENTS_BY_EVENT,
     event_report,loadActiveEventReport}= useContext(ContextAPI)
@@ -86,7 +86,23 @@ export default function Report(props) {
                     <td colSpan={2}>Number Of Students Allowed</td>
                     <td colSpan={2}>
                       {STUDENTS_BY_EVENT.RangeStudents ? (
-                        `${STUDENTS_BY_EVENT.RangeStudents} Students`
+                        <CountUp
+                       
+                        end={STUDENTS_BY_EVENT.RangeStudents}
+                        duration={3.75}                 
+                        decimal=","
+                        suffix=" Students"       
+                        
+
+                      >
+                        {({ countUpRef, start }) => (
+                          <div>
+                            <span className="fw-bold" ref={countUpRef} />
+                            
+                          </div>
+                        )}
+                      </CountUp>
+                       // `${STUDENTS_BY_EVENT.RangeStudents} Students`
                       ) : (
                         <Skeleton animation="wave" width={100} />
                       )}{" "}
