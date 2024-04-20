@@ -265,6 +265,9 @@ export const ContextAPIProvider = ({ children }) => {
         );
       });
   };
+ /**
+ * @param {fun|null} callback - This can be a function or null, used for error detection.
+ */
 
   const readProjectTypes = async (callback) => {
     axios

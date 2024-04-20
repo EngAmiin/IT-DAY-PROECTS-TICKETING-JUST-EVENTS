@@ -86,15 +86,13 @@ export default function Report(props) {
                     <td colSpan={2}>Number Of Students Allowed</td>
                     <td colSpan={2}>
                       {STUDENTS_BY_EVENT.RangeStudents ? (
+                       // console.log(STUDENTS_BY_EVENT.RangeStudents)
                         <CountUp
-                       start={0}
-                       delay={2}
+                    
                         end={STUDENTS_BY_EVENT.RangeStudents}
                         duration={3.75}                 
                         decimal=","
                         suffix=" Students"       
-                        
-
                       >
                         {({ countUpRef, start }) => (
                           <div>
