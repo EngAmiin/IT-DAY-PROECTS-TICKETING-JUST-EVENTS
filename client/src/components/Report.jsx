@@ -87,21 +87,21 @@ export default function Report(props) {
                     <td colSpan={2}>
                       {STUDENTS_BY_EVENT.RangeStudents ? (
                        // console.log(STUDENTS_BY_EVENT.RangeStudents)
-                        <CountUp
+                      //   <CountUp
                     
-                        end={STUDENTS_BY_EVENT.RangeStudents}
-                        duration={3.75}                 
-                        decimal=","
-                        suffix=" Students"       
-                      >
-                        {({ countUpRef, start }) => (
-                          <div>
-                            <span className="fw-bold" ref={countUpRef} />
+                      //   end={STUDENTS_BY_EVENT.RangeStudents}
+                      //   duration={3.75}                 
+                      //   decimal=","
+                      //   suffix=" Students"       
+                      // >
+                      //   {({ countUpRef, start }) => (
+                      //     <div>
+                      //       <span className="fw-bold" ref={countUpRef} />
                             
-                          </div>
-                        )}
-                      </CountUp>
-                       // `${STUDENTS_BY_EVENT.RangeStudents} Students`
+                      //     </div>
+                      //   )}
+                      // </CountUp>
+                        `${STUDENTS_BY_EVENT.RangeStudents} Students`
                       ) : (
                         <Skeleton animation="wave" width={100} />
                       )}{" "}
