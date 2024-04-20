@@ -27,6 +27,26 @@ module.exports = {
       return res.status(500).json("Internal Server Error, Try Again");
     }
   },
+  deleteEvent: (req, res) => {
+    try {
+      var q =
+        "DELETE FROM Events WHERE Events.id =?";
+      dbConn.query(q,[req.params.id], (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+     
+      
+        return res
+          .status(200)
+          .json({ message : "the data has been removed successfully" });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
   readEvents: (req, res) => {
     try {
       var q =
