@@ -1,5 +1,5 @@
 const exp = require("express");
-const { readEvents, projectsByEvent, readAllProjects, checkRegistrationDueDate, readAllEvents, createEvent, updateEventStatus, deleteEvent } = require("../controllers/events");
+const { readEvents, projectsByEvent, readAllProjects, checkRegistrationDueDate, readAllEvents, createEvent, updateEventStatus, deleteEvent, updateEventData, checkEventExistBasedOnYear } = require("../controllers/events");
 
 const router = exp.Router();
 
@@ -10,6 +10,8 @@ router.get("/all", readAllProjects);
 router.get("/allEvents", readAllEvents);
 router.get("/checkDueDate", checkRegistrationDueDate);
 router.post("/create", createEvent);
+router.post("/update", updateEventData);
 router.post("/status", updateEventStatus);
+router.post("/checkEvent", checkEventExistBasedOnYear);
 
 module.exports = router;
