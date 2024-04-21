@@ -116,8 +116,8 @@ module.exports = {
   projectsByEvent: (req, res, next) => {
     try {
       var q =
-        "SELECT students.id_card,projects.ProjectName as Project, students.FullName from students join projects on students.id=projects.student where projects.event=?";
-      dbConn.query(q, [req.params.id], (err, result) => {
+        "SELECT students.id_card,projects.ProjectName as Project, students.FullName from students join projects on students.id=projects.student where projects.event=? and projects.type=?";
+      dbConn.query(q, [req.params.id,req.params.type], (err, result) => {
         if (err)
           return res.status(500).json({
             message: "Error",

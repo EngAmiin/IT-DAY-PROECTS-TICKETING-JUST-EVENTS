@@ -3,7 +3,7 @@ const { readEvents, projectsByEvent, readAllProjects, checkRegistrationDueDate, 
 
 const router = exp.Router();
 
-router.get("/event/:id", projectsByEvent);
+router.get("/event/:id/:type", projectsByEvent);
 router.get("/", readEvents);
 router.get("/all", readAllProjects);
 router.get("/allEvents", readAllEvents);

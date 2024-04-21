@@ -5,6 +5,7 @@ const dbConn = require('../connection/conn.config');
 module.exports = {
   setupProject: (req, res) => {
     try {
+      console.log("body ",req.body)
       var q =
         "INSERT INTO projects(ProjectName,type,event,tech,student) VALUES(?,?,?,?,?)";
       const { project, type, event, tech, studentId } = req.body;
@@ -314,7 +315,8 @@ module.exports = {
   },
   fetchProjectsByType: (req, res) => {
     try {
-      var q = "SELECT projectType.type as label, COUNT(projects.id) as value from projectType join projects ON projectType.id=projects.type WHERE projects.event in (SELECT Events.id from Events WHERE Events.status='Active' ORDER BY Events.year) group by projectType.type";
+      var q =
+        "SELECT projectType.type as label, COUNT(projects.id) as value from projectType join projects ON projectType.id=projects.type WHERE projects.event in (SELECT Events.id from Events WHERE Events.status='Active' or Events.status='active' ORDER BY Events.year) group by projectType.type";
       dbConn.query(q, [req.params.id], (err, result) => {
         if (err)
           return res.status(500).json({

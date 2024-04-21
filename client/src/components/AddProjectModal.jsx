@@ -20,7 +20,7 @@ export default function AddProjectModal({ show, handleClose }) {
     studentId: user.length > 0 ? user[0].id : "",
     project: "",
     type: "",
-    event: 1,
+    event: activeEvent?.id,
     tech: "",
     description: "",
   });
@@ -28,6 +28,8 @@ export default function AddProjectModal({ show, handleClose }) {
   const onChangeValues = (e) =>
     setProjectData({
       ...projectData,
+      studentId: user.length > 0 ? user[0].id : "",
+      event: activeEvent?.id,
       [e.target.name]: e.target.value,
     });
   const handleSubmit = (e) => {
