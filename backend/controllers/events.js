@@ -1,7 +1,5 @@
-const dbConn = require('../connection/conn.config');
-const convertDatetimeToDate = require('../utils/fun.utils')
-
-
+const dbConn = require("../connection/conn.config");
+const convertDatetimeToDate = require("../utils/fun.utils");
 
 module.exports = {
   checkRegistrationDueDate: (req, res) => {
@@ -14,14 +12,32 @@ module.exports = {
             message: "Error",
             description: err.message,
           });
-     
-        const {to_register}=result[0];
+
+        const { to_register } = result[0];
         const dueDate = convertDatetimeToDate(to_register);
         const todaysDate = convertDatetimeToDate(new Date());
-           console.log(dueDate, todaysDate);
+        console.log(dueDate, todaysDate);
         return res
           .status(200)
           .json({ hasReachedDueDate: dueDate === todaysDate });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+  deleteEvent: (req, res) => {
+    try {
+      var q = "DELETE FROM Events WHERE Events.id =?";
+      dbConn.query(q, [req.params.id], (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+
+        return res
+          .status(200)
+          .json({ message: "the data has been removed successfully" });
       });
     } catch (err) {
       return res.status(500).json("Internal Server Error, Try Again");
@@ -46,8 +62,7 @@ module.exports = {
   },
   readAllEvents: (req, res) => {
     try {
-      var q =
-        "SELECT * from Events ORDER BY Events.year DESC";
+      var q = "SELECT * from Events ORDER BY Events.year DESC";
       dbConn.query(q, (err, result) => {
         if (err)
           return res.status(500).json({
@@ -65,8 +80,35 @@ module.exports = {
     try {
       var q =
         "INSERT INTO `Events`(`eventName`, `year`, `from_register`, `to_register`, `due_date`, `no_students`, `status`) VALUES (?,?,?,?,?,?,?)";
-      dbConn.query(q,[req.body.event,req.body.year,req.body.from_reg,req.body.to_reg,
-      req.body.start_date,req.body.num_students,req.body.status], (err, result) => {
+      dbConn.query(
+        q,
+        [
+          req.body.event,
+          req.body.year,
+          req.body.from_reg,
+          req.body.to_reg,
+          req.body.start_date,
+          req.body.num_students,
+          req.body.status,
+        ],
+        (err, result) => {
+          if (err)
+            return res.status(500).json({
+              message: "Error",
+              description: err.message,
+            });
+
+          return res.status(200).json({ data: result });
+        }
+      );
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
+  updateEventStatus: (req, res) => {
+    try {
+      var q = "CALL updateEventStatus(?,?)";
+      dbConn.query(q, [req.body.id, req.body.status], (err, result) => {
         if (err)
           return res.status(500).json({
             message: "Error",
@@ -79,19 +121,30 @@ module.exports = {
       return res.status(500).json("Internal Server Error, Try Again");
     }
   },
-  updateEventStatus: (req, res) => {
+  updateEventData: (req, res) => {
     try {
       var q =
-        "CALL updateEventStatus(?,?)";
-      dbConn.query(q,[req.body.id,req.body.status], (err, result) => {
-        if (err)
-          return res.status(500).json({
-            message: "Error",
-            description: err.message,
-          });
+        "UPDATE Events set eventName =?, from_register=?, to_register=?, due_date=?, no_students=? where id =?";
+      dbConn.query(
+        q,
+        [
+          req.body.event,
+          req.body.from_reg,
+          req.body.to_reg,
+          req.body.start_date,
+          req.body.num_students,
+          req.body.id,
+        ],
+        (err, result) => {
+          if (err)
+            return res.status(500).json({
+              message: "Error",
+              description: err.message,
+            });
 
-        return res.status(200).json({ data: result });
-      });
+          return res.status(200).json({ data: result });
+        }
+      );
     } catch (err) {
       return res.status(500).json("Internal Server Error, Try Again");
     }
@@ -129,5 +182,18 @@ module.exports = {
     } catch (err) {
       return res.status(500).json("Internal Server Error, Try Again");
     }
+  },
+  checkEventExistBasedOnYear: (req, res) => {
+    var { year } = req.body;
+    var sql = "SELECT *FROM Events where Events.year = ?";
+    dbConn.query(sql, [year], (err, result) => {
+      if (err)
+        return res.status(500).json({
+          message: "Error",
+          description: err.message,
+        });
+
+      return res.status(200).json({ data: result });
+    });
   },
 };

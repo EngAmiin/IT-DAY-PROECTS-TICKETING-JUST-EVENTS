@@ -12,6 +12,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import { ContextAPI } from "../context/Provider";
 import Report from "./Report";
 import FAQ from "./faq";
+import DarkModeToggle from "./DarkMode";
 
 export default function Home() {
   const isMobileOrMd = useMediaQuery("(max-width: 768px)");
@@ -23,6 +24,7 @@ export default function Home() {
 
   return (
     <Container style={{ marginTop: "4rem" }}>
+      <DarkModeToggle/>
       <Row>
         <Col xl={7} md={12}>
           <div className="">
