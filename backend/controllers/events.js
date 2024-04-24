@@ -129,9 +129,9 @@ module.exports = {
         q,
         [
           req.body.event,
-          req.body.from_reg,
-          req.body.to_reg,
-          req.body.start_date,
+          convertDatetimeToDate(req.body.from_reg),
+          convertDatetimeToDate(req.body.to_reg),
+          convertDatetimeToDate(req.body.start_date),
           req.body.num_students,
           req.body.id,
         ],
@@ -170,7 +170,7 @@ module.exports = {
     try {
       var q =
         "SELECT students.id_card,projects.ProjectName as Project, students.FullName from students join projects on students.id=projects.student where projects.event=? and projects.type=?";
-      dbConn.query(q, [req.params.id,req.params.type], (err, result) => {
+      dbConn.query(q, [req.params.id, req.params.type], (err, result) => {
         if (err)
           return res.status(500).json({
             message: "Error",
