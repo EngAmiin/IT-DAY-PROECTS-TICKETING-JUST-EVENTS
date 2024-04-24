@@ -17,6 +17,7 @@ app.get("/", function(req, res, next) {
         support : "jutsa@just.edu.so"
     })
 })
+
 // routes
 const stdRouter = require("./routes/students.route");
 const userRouter = require("./routes/user.route");
