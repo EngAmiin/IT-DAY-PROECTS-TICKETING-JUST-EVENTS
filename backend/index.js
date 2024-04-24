@@ -25,7 +25,7 @@ app.use("/portal/messages",messageRouter);
 app.use("/portal/projectTypes", typeRouter);
 
 
-app.get("/error", function(req, res){
+app.use("/", function(req, res){
     return res.status(404).json({
         message : "the url you are requesting is not found"
     })
