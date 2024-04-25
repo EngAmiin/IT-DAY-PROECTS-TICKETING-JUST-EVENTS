@@ -31,7 +31,7 @@ module.exports = {
             description: err.message,
           });
 
-        return res.status(200).json({ data: result });
+        return res.status(200).json(result);
       });
     } catch (err) {
       return res.status(500).json("Internal Server Error, Try Again");
