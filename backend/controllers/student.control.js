@@ -3,9 +3,26 @@ const dbConn = require('../connection/conn.config');
 
 
 module.exports = {
+  getNumberOfProjectsByStudent: (req, res) => {
+    try {
+      var q = "SELECT getStudentsProjectByEvent(?,?) AS hasData";
+      const { eventId, studentId } = req.params;
+      dbConn.query(q, [eventId, studentId], (err, result) => {
+        if (err)
+          return res.status(500).json({
+            message: "Error",
+            description: err.message,
+          });
+        const { hasData } = result[0];
+        return res.status(200).json({ hasTwoProject: hasData==1 });
+      });
+    } catch (err) {
+      return res.status(500).json("Internal Server Error, Try Again");
+    }
+  },
   setupProject: (req, res) => {
     try {
-      console.log("body ",req.body)
+      console.log("body ", req.body);
       var q =
         "INSERT INTO projects(ProjectName,type,event,tech,student) VALUES(?,?,?,?,?)";
       const { project, type, event, tech, studentId } = req.body;
@@ -33,11 +50,19 @@ module.exports = {
     try {
       var q =
         "INSERT INTO students(FullName,mobile,email,password,id_card,semester,event,class) VALUES(?,?,?,?,?,?,?,?)";
-      const { name, mobile, email, password, id_card, semester, event,className } =
-        req.body;
+      const {
+        name,
+        mobile,
+        email,
+        password,
+        id_card,
+        semester,
+        event,
+        className,
+      } = req.body;
       dbConn.query(
         q,
-        [name, mobile, email, password, id_card, semester, event,className],
+        [name, mobile, email, password, id_card, semester, event, className],
         (err, result) => {
           if (err)
             return res.status(500).json({
@@ -261,38 +286,33 @@ module.exports = {
   },
   updateProfile: (req, res) => {
     try {
-      if(req.body.type=="data"){
-  var q = "UPDATE`students` set email=?, mobile=? WHERE id=?";
-  dbConn.query(
-    q,
-    [req.body.email, req.body.mobile, req.body.id],
-    (err, result) => {
-      if (err)
-        return res.status(500).json({
-          message: "Error",
-          description: err.message,
+      if (req.body.type == "data") {
+        var q = "UPDATE`students` set email=?, mobile=? WHERE id=?";
+        dbConn.query(
+          q,
+          [req.body.email, req.body.mobile, req.body.id],
+          (err, result) => {
+            if (err)
+              return res.status(500).json({
+                message: "Error",
+                description: err.message,
+              });
+
+            return res.status(200).json({ type: "data", data: result });
+          }
+        );
+      } else {
+        var q = "UPDATE`students` set password=? WHERE id=?";
+        dbConn.query(q, [req.body.newPass, req.body.id], (err, result) => {
+          if (err)
+            return res.status(500).json({
+              message: "Error",
+              description: err.message,
+            });
+
+          return res.status(200).json({ type: "privacy", data: result });
         });
-
-      return res.status(200).json({ type: "data", data: result });
-    }
-  );
-      }else{
-          var q = "UPDATE`students` set password=? WHERE id=?";
-          dbConn.query(
-            q,
-            [req.body.newPass,  req.body.id],
-            (err, result) => {
-              if (err)
-                return res.status(500).json({
-                  message: "Error",
-                  description: err.message,
-                });
-
-              return res.status(200).json({ type: "privacy", data: result });
-            }
-          );
       }
-    
     } catch (err) {
       return res.status(500).json("Internal Server Error, Try Again");
     }
@@ -332,8 +352,7 @@ module.exports = {
   },
   deleteStudent: (req, res) => {
     try {
-      var q =
-        "DELETE FROM students where id = ?";
+      var q = "DELETE FROM students where id = ?";
       dbConn.query(q, [req.params.student], (err, result) => {
         if (err)
           return res.status(500).json({

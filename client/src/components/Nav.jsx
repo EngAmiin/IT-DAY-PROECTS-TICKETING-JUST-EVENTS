@@ -30,21 +30,22 @@ export default function Nav() {
                   <Link to="/projects" className="mx-2">
                     {t("My Projects")}
                   </Link>
-                  <Link to={"/account"}>
-                   {t("Account")}
-                  </Link>
+                  <Link to={"/account"}>{t("Account")}</Link>
                   <Link to={"/login"} className="mx-2">
-                  {t("Logout")}
-                    
+                    {t("Logout")}
+                  </Link>
+                  <Link className="mx-2" to="https://wa.link/lntytz">
+                    {t("Support")}
                   </Link>
                 </>
               ) : (
                 <>
-                  <Link to="/register">
-                    {t("Join Now")}</Link>
+                  <Link to="/register">{t("Join Now")}</Link>
                   <Link className="mx-2" to="/login">
-                  {t("Login")}
-                    
+                    {t("Login")}
+                  </Link>
+                  <Link className="mx-2" to="https://wa.link/lntytz">
+                    {t("Support")}
                   </Link>
                 </>
               )}

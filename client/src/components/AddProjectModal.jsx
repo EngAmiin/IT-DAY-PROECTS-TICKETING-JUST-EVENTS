@@ -5,10 +5,19 @@ import Form from "react-bootstrap/Form";
 import { Row, Col } from "react-bootstrap";
 import { ContextAPI } from "../context/Provider";
 import { Toaster, toast } from "react-hot-toast";
+import { Alert } from "@mui/material";
 
 export default function AddProjectModal({ show, handleClose }) {
-  const {readActiveEvent,activeEvent, readProjectTypes,projectTypes,registerProject, user, getCurrentUser, readProjects } =
-    useContext(ContextAPI);
+  const {
+    hasTwoProjects,readActiveEvent,
+    activeEvent,
+    readProjectTypes,
+    projectTypes,
+    registerProject,
+    user,
+    getCurrentUser,
+    readProjects,
+  } = useContext(ContextAPI);
     useEffect(()=>{
       getCurrentUser();
       readProjectTypes(function(){});
@@ -34,6 +43,10 @@ export default function AddProjectModal({ show, handleClose }) {
     });
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(activeEvent, " data event");
+hasTwoProjects({event: activeEvent && activeEvent.id,student:  projectData.studentId}, (err, res) => {
+  if (err) toast.error(res);
+  else {
     registerProject(projectData, (err, res) => {
       if (err) {
         toast.error(res);
@@ -54,10 +67,14 @@ export default function AddProjectModal({ show, handleClose }) {
         description: "",
       });
     });
+  }
+});
+ 
     console.log(projectData);
   };
   return (
     <>
+    
       <Toaster position="top-center" reverseOrder={false} />
       <Modal
         size="lg"
@@ -125,7 +142,7 @@ export default function AddProjectModal({ show, handleClose }) {
                   onChange={onChangeValues}
                   aria-label="Default select example"
                 >
-                  {Object.keys(activeEvent).length >0 ? (
+                  {Object.keys(activeEvent).length > 0 ? (
                     <option value={activeEvent && activeEvent.id}>
                       {activeEvent && activeEvent.event}
                     </option>
@@ -182,7 +199,9 @@ export default function AddProjectModal({ show, handleClose }) {
           <Button variant="outline-secondary" onClick={handleSubmit}>
             Submit
           </Button>
+
         </Modal.Footer>
+          <Alert severity="warning">you can't add more tha  two project with the same event.</Alert>
       </Modal>
     </>
   );

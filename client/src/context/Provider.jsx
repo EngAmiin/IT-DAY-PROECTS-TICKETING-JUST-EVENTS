@@ -462,6 +462,29 @@ export const ContextAPIProvider = ({ children }) => {
            );
          });
      };
+     const hasTwoProjects = async (data,callback) => {
+       axios
+         .get(`${DEV_PRODUCTION}student/checkProject/${data.event}/${data.student}`)
+         .then((response) => {
+          console.log("esponse isn",response.data)
+            if(response.data.hasTwoProject)
+             callback(
+               true,
+               "You can't register more than two project with same event 😀. "
+             );
+            else
+              callback(
+               false,
+               null
+             );
+         })
+         .catch((error) => {
+           callback(
+             true,
+             error.message
+           );
+         });
+     };
 
 
   return (
@@ -502,6 +525,7 @@ export const ContextAPIProvider = ({ children }) => {
         loadActiveEventReport,
         sendMessage,
         checkDueDate,
+        hasTwoProjects
       }}
     >
       {children}

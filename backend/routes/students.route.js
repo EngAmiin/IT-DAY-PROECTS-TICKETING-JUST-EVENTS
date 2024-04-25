@@ -18,6 +18,7 @@ const {
   fetchCurrentStudentsByEvent,
   fetchEventReport,
   deleteStudent,
+  getNumberOfProjectsByStudent,
 } = require("../controllers/student.control");
 const router = exp.Router();
 
@@ -26,6 +27,7 @@ router.get("/checkPass/:id", geCurrentPassword);
 router.get("/current/:id", readCurrentUser);
 router.get("/eventRange/:id", fetchStudentRangeByEvent);
 router.get("/:id_card/:password", authenticate);
+router.get("/checkProject/:eventId/:studentId", getNumberOfProjectsByStudent);
 router.delete("/remove/:student", deleteStudent);
 
 
