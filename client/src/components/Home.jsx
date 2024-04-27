@@ -24,7 +24,7 @@ export default function Home() {
 
   return (
     <Container style={{ marginTop: "4rem" }}>
-      <DarkModeToggle/>
+      {/* <DarkModeToggle/> */}
       <Row>
         <Col xl={7} md={12}>
           <div className="">
