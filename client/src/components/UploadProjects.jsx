@@ -49,13 +49,24 @@ export default function UploadProjects() {
         maxFiles={1}
         inputContent="Drag and drop an Excel file contains your projects"
       />
-      {fileData && (
-        <div>
-          <h3>Uploaded Products:</h3>
-          <Code colorScheme="yellow" children="const data = {data ? a : b}" />
-          <pre>{JSON.stringify(fileData, null, 2)}</pre>
-        </div>
-      )}
+     <table>
+    <thead>
+      <tr>
+        {Object.keys(fileData[0]).map((key) => (
+          <th key={key}>{key}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {fileData.map((project, index) => (
+        <tr key={index}>
+          {Object.values(project).map((value, i) => (
+            <td key={i}>{value}</td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
     </div>
   );
 }
