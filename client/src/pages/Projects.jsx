@@ -12,6 +12,7 @@ import Confirm from "../components/Confirm";
 import { ColorRing } from "react-loader-spinner";
 import ConfirmAlertChakra from "../common/ConfirmAlertChakra";
 import {  useDisclosure} from "@chakra-ui/react";
+import UploadProjects from "../components/UploadProjects";
 
 export default function Projects() {
   const {event_report,loadActiveEventReport,pending, removeProject, projectsByUser, user, getCurrentUser, readProjects } =
@@ -114,6 +115,7 @@ export default function Projects() {
 
   return (
     <Container style={{ marginTop: "4rem" }}>
+      {/* <UploadProjects/> */}
       <ConfirmAlertChakra isDeleting={isDeleting} onConfirm ={removeData} isOpen={isOpen} onClose={onClose} cancelRef={cancelRef}/>
       <Toaster position="top-center" reverseOrder={false} />
       <Card className="box-shadow">
