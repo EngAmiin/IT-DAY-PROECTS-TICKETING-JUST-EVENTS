@@ -72,7 +72,7 @@ export default function Home() {
       </Row>
       <Report />
       <FAQ />
-      <TopTalents />
+      {/* <TopTalents /> */}
 
      
     </Container>
