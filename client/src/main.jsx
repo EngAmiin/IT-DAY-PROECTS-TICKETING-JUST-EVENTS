@@ -6,11 +6,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import '../fonts/poppins.css'
 import { ContextAPIProvider } from './context/Provider.jsx';
 import './locale/config.js'
+import { ChakraProvider } from '@chakra-ui/react'
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ContextAPIProvider>
+   <ChakraProvider>
+   <ContextAPIProvider>
       <App />
     </ContextAPIProvider>
+   </ChakraProvider>
   </React.StrictMode>
 );

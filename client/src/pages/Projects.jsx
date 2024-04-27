@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
@@ -10,11 +10,17 @@ import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router";
 import Confirm from "../components/Confirm";
 import { ColorRing } from "react-loader-spinner";
+import ConfirmAlertChakra from "../common/ConfirmAlertChakra";
+import {  useDisclosure} from "@chakra-ui/react";
+
 export default function Projects() {
   const {event_report,loadActiveEventReport,pending, removeProject, projectsByUser, user, getCurrentUser, readProjects } =
     useContext(ContextAPI);
+    const {isOpen,onClose,onOpen}= useDisclosure()
+    const cancelRef = useRef();
   const [open, setOpen] = useState(false);
   const [confirmModal, setConfirmModel] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [deletedData, setDeletedData] = useState({
     projectId: "",
     studentId: user[0]?.id,
@@ -22,6 +28,7 @@ export default function Projects() {
   const nav = useNavigate();
 
   const removeData = () => {
+    setIsDeleting(true)
     removeProject(deletedData, (err, res) => {
       if (err) {
         toast.error(res);
@@ -29,6 +36,8 @@ export default function Projects() {
       }
       toast.success(res);
       load();
+      setIsDeleting(false)
+      onClose();
     });
   };
   const load = () => {
@@ -91,7 +100,7 @@ export default function Projects() {
                 ...deletedData,
                 projectId: row.id,
               });
-              setConfirmModel(true);
+              onOpen()
             }}
           ></i>
           <i
@@ -105,6 +114,7 @@ export default function Projects() {
 
   return (
     <Container style={{ marginTop: "4rem" }}>
+      <ConfirmAlertChakra isDeleting={isDeleting} onConfirm ={removeData} isOpen={isOpen} onClose={onClose} cancelRef={cancelRef}/>
       <Toaster position="top-center" reverseOrder={false} />
       <Card className="box-shadow">
         <Card.Body>
@@ -164,7 +174,7 @@ export default function Projects() {
       <Confirm
         handleConfirm={removeData}
         title={"Confirm To Remove 🧨"}
-        message={<strong>Continue To Remove This Project?</strong>}
+        message={<strong>Continue To Remove This Data?</strong>}
         show={confirmModal}
         handleClose={() => setConfirmModel(false)}
       />
