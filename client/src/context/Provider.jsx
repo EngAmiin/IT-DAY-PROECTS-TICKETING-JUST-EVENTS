@@ -486,7 +486,19 @@ export const ContextAPIProvider = ({ children }) => {
          });
      };
 
-
+     const updateProject = async (projectData, callback) => {
+      dispatch({ type: SAVING });
+      axios
+        .post(`${DEV_PRODUCTION}student/updateProject`, projectData)
+        .then((response) => {
+          dispatch({ type: SET_SAVING })
+          callback(false, "Project updated successfully!");
+        })
+        .catch((error) => {
+          dispatch({ type: SET_SAVING });
+          callback(true, "Error occurred during project update, please try again");
+        });
+    };
   return (
     <ContextAPI.Provider
       value={{
@@ -525,7 +537,8 @@ export const ContextAPIProvider = ({ children }) => {
         loadActiveEventReport,
         sendMessage,
         checkDueDate,
-        hasTwoProjects
+        hasTwoProjects,
+        updateProject
       }}
     >
       {children}
