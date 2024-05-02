@@ -17,8 +17,8 @@ const {
   fetchProjectsByType,
   fetchCurrentStudentsByEvent,
   fetchEventReport,
-  deleteStudent,
-  getNumberOfProjectsByStudent,
+  updateProject,
+
 } = require("../controllers/student.control");
 const router = exp.Router();
 
@@ -27,9 +27,6 @@ router.get("/checkPass/:id", geCurrentPassword);
 router.get("/current/:id", readCurrentUser);
 router.get("/eventRange/:id", fetchStudentRangeByEvent);
 router.get("/:id_card/:password", authenticate);
-router.get("/checkProject/:eventId/:studentId", getNumberOfProjectsByStudent);
-router.delete("/remove/:student", deleteStudent);
-
 
 router.get("/semesters", readSemesters);
 router.get("/chart/projects/projectTypes", fetchProjectsByType);
@@ -40,10 +37,14 @@ router.get("/active-event", readActiveEvent);
 router.get("/view-projects", readProjectsForAdmins);
 
 
+
 router.post("/registerStudent", registerStudent);
 router.post("/submitProject", setupProject);
 router.post("/updateStatus", updateStatus);
 router.post("/profile", updateProfile);
+router.post("/updateProject", updateProject);
+
+
 
 router.delete("/remove/:projectId/:studentId", removeProject);
 

@@ -369,6 +369,23 @@ export const ContextAPIProvider = ({ children }) => {
       });
   };
 
+
+  const updateProject = async (projectData, callback) => {
+    dispatch({ type: SAVING });
+    axios
+      .post(`${DEV_PRODUCTION}student/updateProject`, projectData)
+      .then((response) => {
+        dispatch({ type: SET_SAVING })
+        callback(false, "Project updated successfully!");
+      })
+      .catch((error) => {
+        dispatch({ type: SET_SAVING });
+        callback(true, "Error occurred during project update, please try again");
+      });
+  };
+  
+
+
   const checkStudentRange = async (eventId, callback) => {
     axios
       .get(`${DEV_PRODUCTION}student/eventRange/${eventId}`)
@@ -426,6 +443,8 @@ export const ContextAPIProvider = ({ children }) => {
           });
       };
 
+    
+
      const isValidCurrentPassword = async (id,data, callback) => {
        axios
          .get(`${DEV_PRODUCTION}student/checkPass/${id}`)
@@ -462,43 +481,8 @@ export const ContextAPIProvider = ({ children }) => {
            );
          });
      };
-     const hasTwoProjects = async (data,callback) => {
-       axios
-         .get(`${DEV_PRODUCTION}student/checkProject/${data.event}/${data.student}`)
-         .then((response) => {
-          console.log("esponse isn",response.data)
-            if(response.data.hasTwoProject)
-             callback(
-               true,
-               "You can't register more than two project with same event 😀. "
-             );
-            else
-              callback(
-               false,
-               null
-             );
-         })
-         .catch((error) => {
-           callback(
-             true,
-             error.message
-           );
-         });
-     };
 
-     const updateProject = async (projectData, callback) => {
-      dispatch({ type: SAVING });
-      axios
-        .post(`${DEV_PRODUCTION}student/updateProject`, projectData)
-        .then((response) => {
-          dispatch({ type: SET_SAVING })
-          callback(false, "Project updated successfully!");
-        })
-        .catch((error) => {
-          dispatch({ type: SET_SAVING });
-          callback(true, "Error occurred during project update, please try again");
-        });
-    };
+
   return (
     <ContextAPI.Provider
       value={{
@@ -517,6 +501,8 @@ export const ContextAPIProvider = ({ children }) => {
         projectTypes: state.projectTypes,
         activeEvent: state.activeEvent,
         currentUserData: state.currentUserData,
+        ...state,
+        updateProject,
         getCurrentUser,
         readProjectTypes,
         setCurrentUser,
@@ -537,8 +523,6 @@ export const ContextAPIProvider = ({ children }) => {
         loadActiveEventReport,
         sendMessage,
         checkDueDate,
-        hasTwoProjects,
-        updateProject
       }}
     >
       {children}

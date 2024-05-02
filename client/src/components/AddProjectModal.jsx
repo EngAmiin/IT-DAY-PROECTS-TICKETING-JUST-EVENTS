@@ -5,19 +5,10 @@ import Form from "react-bootstrap/Form";
 import { Row, Col } from "react-bootstrap";
 import { ContextAPI } from "../context/Provider";
 import { Toaster, toast } from "react-hot-toast";
-import { Alert } from "@mui/material";
 
-export default function AddProjectModal({ show, handleClose }) {
-  const {
-    hasTwoProjects,readActiveEvent,
-    activeEvent,
-    readProjectTypes,
-    projectTypes,
-    registerProject,
-    user,
-    getCurrentUser,
-    readProjects,
-  } = useContext(ContextAPI);
+export default function AddProjectModal({ show, handleClose, isEditing,setIsEditing,editData, setEditData }) {
+  const {readActiveEvent,activeEvent, readProjectTypes,projectTypes,registerProject, user, getCurrentUser, readProjects,updateProject } =
+    useContext(ContextAPI);
     useEffect(()=>{
       getCurrentUser();
       readProjectTypes(function(){});
@@ -41,12 +32,32 @@ export default function AddProjectModal({ show, handleClose }) {
       event: activeEvent?.id,
       [e.target.name]: e.target.value,
     });
+  const onChangeEditValues = (e) =>
+    setEditData({
+      ...editData,
+      [e.target.name]: e.target.value,
+    });
+
+    const handleUpdateData = ()=>{
+      updateProject(editData, (err,res)=>{
+        if(err)
+         toast.error(res);
+        else{
+          toast.success(res);
+                    readProjects(
+                      JSON.parse(localStorage.getItem("user"))[0].id,
+                      function () {}
+                    );
+                    handleClose();
+                    console.log("data edited is ",editData)
+                    setIsEditing(false);
+                    handleClose();   
+        }
+      })
+    
+    }
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(activeEvent, " data event");
-hasTwoProjects({event: activeEvent && activeEvent.id,student:  projectData.studentId}, (err, res) => {
-  if (err) toast.error(res);
-  else {
     registerProject(projectData, (err, res) => {
       if (err) {
         toast.error(res);
@@ -67,142 +78,241 @@ hasTwoProjects({event: activeEvent && activeEvent.id,student:  projectData.stude
         description: "",
       });
     });
-  }
-});
- 
     console.log(projectData);
   };
   return (
     <>
-    
       <Toaster position="top-center" reverseOrder={false} />
+      {!isEditing ? 
+       <Modal
+       size="lg"
+       show={show}
+       onHide={handleClose}
+       backdrop="static"
+       keyboard={false}
+     >
+       <Modal.Header closeButton>
+         <Modal.Title>Submit Your Project</Modal.Title>
+       </Modal.Header>
+       <Modal.Body>
+         <Row>
+           <Col lg={6} sm={12} md={12}>
+             <Form.Group
+               className="mb-3"
+               controlId="exampleForm.ControlInput1"
+             >
+               <Form.Label>Project Name</Form.Label>
+               <Form.Control
+                 name="project"
+                 value={projectData.project}
+                 onChange={onChangeValues}
+                 type="text"
+                 placeholder="e.g: bank manageemnt system"
+               />
+             </Form.Group>
+           </Col>
+           <Col lg={6} sm={12} md={12}>
+             <Form.Group
+               className="mb-3"
+               controlId="exampleForm.ControlInput1"
+             >
+               <Form.Label>Type</Form.Label>
+               <Form.Select
+                 defaultValue={""}
+                 name="type"
+                 value={projectData.type}
+                 onChange={onChangeValues}
+                 aria-label="Default select example"
+               >
+                 <option value="">Select Project Types</option>
+                 {projectTypes &&
+                   projectTypes.map((projectType) => {
+                     return (
+                       <option value={projectType.id}>
+                         {projectType.type}
+                       </option>
+                     );
+                   })}
+               </Form.Select>
+             </Form.Group>
+           </Col>
+           <Col lg={12} sm={12} md={12}>
+             <Form.Group
+               className="mb-3"
+               controlId="exampleForm.ControlInput1"
+             >
+               <Form.Label>Active Event</Form.Label>
+               <Form.Select
+                 disabled
+                 defaultValue={activeEvent && activeEvent.id}
+                 name="event"
+                 value={projectData.event}
+                 onChange={onChangeValues}
+                 aria-label="Default select example"
+               >
+                 {Object.keys(activeEvent).length >0 ? (
+                   <option value={activeEvent && activeEvent.id}>
+                     {activeEvent && activeEvent.event}
+                   </option>
+                 ) : (
+                   <option value="">
+                     There is No Active Events, To Submit Ths Project
+                   </option>
+                 )}
+               </Form.Select>
+               <strong className="text-danger fs-6">
+                 ** Only You Can Join Active Events{" "}
+                 {activeEvent && activeEvent.event}
+               </strong>
+             </Form.Group>
+           </Col>
+           <Col lg={12} sm={12} md={12}>
+             <Form.Group
+               className="mb-3"
+               controlId="exampleForm.ControlInput1"
+             >
+               <Form.Label>Technologies</Form.Label>
+               <Form.Control
+                 name="tech"
+                 value={projectData.tech}
+                 onChange={onChangeValues}
+                 as="textarea"
+                 placeholder="use comma (,) to register multiple tech"
+                 rows={3}
+               />
+             </Form.Group>
+           </Col>
+           <Col>
+             <Form.Group
+               className="mb-3"
+               controlId="exampleForm.ControlTextarea1"
+             >
+               <Form.Label>Description (Optional)</Form.Label>
+               <Form.Control
+                 name="description"
+                 value={projectData.description}
+                 onChange={onChangeValues}
+                 as="textarea"
+                 placeholder="describe more formal"
+                 rows={3}
+               />
+             </Form.Group>
+           </Col>
+         </Row>
+       </Modal.Body>
+       <Modal.Footer>
+         <Button variant="outline-danger" onClick={handleClose}>
+           Close
+         </Button>
+         <Button variant="outline-secondary" onClick={handleSubmit}>
+           Submit
+         </Button>
+       </Modal.Footer>
+     </Modal>
+      
+      
+      : 
+      // editng data
       <Modal
-        size="lg"
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Submit Your Project</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Row>
-            <Col lg={6} sm={12} md={12}>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
+      size="lg"
+      show={show}
+      onHide={handleClose}
+      backdrop="static"
+      keyboard={false}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Edit Your Project</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Row>
+          <Col lg={6} sm={12} md={12}>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlInput1"
+            >
+              <Form.Label>Project Name</Form.Label>
+              <Form.Control
+                name="ProjectName"
+                value={editData.ProjectName}
+                onChange={onChangeEditValues}
+                type="text"
+                placeholder="e.g: bank manageemnt system"
+              />
+            </Form.Group>
+          </Col>
+          <Col lg={6} sm={12} md={12}>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlInput1"
+            >
+              <Form.Label>Type</Form.Label>
+              <Form.Select
+                
+                name="typeId"
+                value={editData.typeId}
+                defaultValue={editData && editData.typeId}
+                onChange={onChangeEditValues}
+                aria-label="Default select example"
               >
-                <Form.Label>Project Name</Form.Label>
-                <Form.Control
-                  name="project"
-                  value={projectData.project}
-                  onChange={onChangeValues}
-                  type="text"
-                  placeholder="e.g: bank manageemnt system"
-                />
-              </Form.Group>
-            </Col>
-            <Col lg={6} sm={12} md={12}>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label>Type</Form.Label>
-                <Form.Select
-                  defaultValue={""}
-                  name="type"
-                  value={projectData.type}
-                  onChange={onChangeValues}
-                  aria-label="Default select example"
-                >
-                  <option value="">Select Project Types</option>
-                  {projectTypes &&
-                    projectTypes.map((projectType) => {
-                      return (
-                        <option value={projectType.id}>
-                          {projectType.type}
-                        </option>
-                      );
-                    })}
-                </Form.Select>
-              </Form.Group>
-            </Col>
-            <Col lg={12} sm={12} md={12}>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label>Active Event</Form.Label>
-                <Form.Select
-                  disabled
-                  defaultValue={activeEvent && activeEvent.id}
-                  name="event"
-                  value={projectData.event}
-                  onChange={onChangeValues}
-                  aria-label="Default select example"
-                >
-                  {Object.keys(activeEvent).length > 0 ? (
-                    <option value={activeEvent && activeEvent.id}>
-                      {activeEvent && activeEvent.event}
-                    </option>
-                  ) : (
-                    <option value="">
-                      There is No Active Events, To Submit Ths Project
-                    </option>
-                  )}
-                </Form.Select>
-                <strong className="text-danger fs-6">
-                  ** Only You Can Join Active Events{" "}
-                  {activeEvent && activeEvent.event}
-                </strong>
-              </Form.Group>
-            </Col>
-            <Col lg={12} sm={12} md={12}>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label>Technologies</Form.Label>
-                <Form.Control
-                  name="tech"
-                  value={projectData.tech}
-                  onChange={onChangeValues}
-                  as="textarea"
-                  placeholder="use comma (,) to register multiple tech"
-                  rows={3}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea1"
-              >
-                <Form.Label>Description (Optional)</Form.Label>
-                <Form.Control
-                  name="description"
-                  value={projectData.description}
-                  onChange={onChangeValues}
-                  as="textarea"
-                  placeholder="describe more formal"
-                  rows={3}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="outline-danger" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="outline-secondary" onClick={handleSubmit}>
-            Submit
-          </Button>
-
-        </Modal.Footer>
-          <Alert severity="warning">you can't add more tha  two project with the same event.</Alert>
-      </Modal>
+                <option value="">Select Project Types</option>
+                {projectTypes &&
+                  projectTypes.map((projectType) => {
+                    return (
+                      <option value={projectType.id}>
+                        {projectType.type}
+                      </option>
+                    );
+                  })}
+              </Form.Select>
+            </Form.Group>
+          </Col>
+       
+          {/* <Col lg={12} sm={12} md={12}>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlInput1"
+            >
+              <Form.Label>Technologies</Form.Label>
+              <Form.Control
+                name="tech"
+                value={projectData.tech}
+                onChange={onChangeValues}
+                as="textarea"
+                placeholder="use comma (,) to register multiple tech"
+                rows={3}
+              />
+            </Form.Group>
+          </Col> */}
+          {/* <Col>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea1"
+            >
+              <Form.Label>Description (Optional)</Form.Label>
+              <Form.Control
+                name="description"
+                value={projectData.description}
+                onChange={onChangeValues}
+                as="textarea"
+                placeholder="describe more formal"
+                rows={3}
+              />
+            </Form.Group>
+          </Col> */}
+        </Row>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="outline-danger" onClick={handleClose}>
+          Close
+        </Button>
+        <Button variant="outline-secondary" onClick={handleUpdateData}>
+          Save Changes
+        </Button>
+      </Modal.Footer>
+    </Modal>
+      
+      }
+     
     </>
   );
 }
